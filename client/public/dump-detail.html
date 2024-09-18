@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>渣场档案 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px; /* 减小最大宽度 */
+            margin: 0 auto;
+            padding: 40px; /* 增加内边距 */
+        }
+        .section {
+            margin-bottom: 30px; /* 增加部分之间的间距 */
+            background-color: #fff;
+            padding: 30px; /* 增加内部填充 */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 20px; /* 增加行间距 */
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 20px; /* 增加字段间距 */
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .radio-group {
+            display: flex;
+        }
+        .radio-group label {
+            margin-right: 30px; /* 增加单选按钮间距 */
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .btn-nav {
+            background-color: #1e88e5;
+            color: white;
+        }
+        .btn-nav:hover {
+            background-color: #1565c0;
+        }
+        .btn-function {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-function:hover {
+            background-color: #45a049;
+        }
+        .form-row-special {
+            display: flex;
+            margin-bottom: 25px; /* 增加特殊行的间距 */
+            align-items: flex-end; /* 将对齐方式改为底部对齐 */
+        }
+        .form-field-label {
+            flex: 0 0 30%;
+            margin-right: 20px;
+            padding-bottom: 8px; /* 添加底部内边距，使其与输入框底部对齐 */
+        }
+        .form-field-input {
+            flex: 1;
+            position: relative;
+        }
+        .form-input-underline {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #ddd;
+            padding: 5px 0;
+            outline: none;
+            background-color: transparent;
+        }
+        .form-label-float {
+            position: absolute;
+            left: 0;
+            bottom: 5px;
+            transition: all 0.2s ease-out;
+            pointer-events: none;
+        }
+        .form-input-underline:focus + .form-label-float,
+        .form-input-underline:not(:placeholder-shown) + .form-label-float {
+            opacity: 0;
+        }
+        .image-gallery th {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .section-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .btn-edit {
+            background-color: #ffa000;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+        .btn-save {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+        .image-gallery table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .image-gallery th, .image-gallery td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .image-gallery th {
+            background-color: #f2f2f2;
+        }
+        .image-actions {
+            white-space: nowrap;
+        }
+        .image-actions button {
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+        .required::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>渣场档案</h1>
+        </header>
+        <div style="text-align: right; margin-bottom: 20px;">
+            <button class="btn btn-nav" onclick="location.href='dump-list.html'">返回上一页</button>
+        </div>
+        <form id="dumpForm">
+            <div class="section">
+                <h2>基本信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label required">渣场名称</label>
+                        <input type="text" name="dumpName" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">渣场类型</label>
+                        <input type="text" name="dumpType" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label required">所在位置</label>
+                        <input type="text" name="dumpLocation" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">经纬度</label>
+                        <input type="text" name="coordinates" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label">所属标段</label>
+                        <input type="text" name="section" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">使用维护单位</label>
+                        <input type="text" name="unit" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label required">渣场状态</label>
+                        <select name="dumpStatus" class="form-input" required>
+                            <option value="">请选择</option>
+                            <option value="未使用">未使用</option>
+                            <option value="使用中">使用中</option>
+                            <option value="堆渣完毕">堆渣完毕</option>
+                            <option value="已移交">已移交</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label">设计渣场</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="isDesigned" value="是"> 是          <input type="radio" name="isDesigned" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                         <label class="form-label">涉水渣场</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="isDesigned" value="是"> 是          <input type="radio" name="isDesigned" value="否"> 否</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label">设计堆渣量</label>
+                        <input type="text" name="designedCapacity" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">设计堆渣高度</label>
+                        <input type="text" name="designedHeight" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label">实际堆渣量</label>
+                        <input type="text" name="actualCapacity" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">实际堆渣高度</label>
+                        <input type="text" name="actualHeight" class="form-input">
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>渣场隐患排查</h2>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">渣场用地手续是否齐全</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="hasLandProcedures" value="是"> 是</label>
+                            <label><input type="radio" name="hasLandProcedures" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="landProceduresNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="landProceduresNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">是否编制稳评报告</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="hasStabilityReport" value="是"> 是</label>
+                            <label><input type="radio" name="hasStabilityReport" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="stabilityReportNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="stabilityReportNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">是否有地质灾害隐患</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="hasGeologicalHazard" value="是"> 是</label>
+                            <label><input type="radio" name="hasGeologicalHazard" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="geologicalHazardNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="geologicalHazardNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">是否在安全距离内有居民</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="hasResidentsNearby" value="是"> 是</label>
+                            <label><input type="radio" name="hasResidentsNearby" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="residentsNearbyNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="residentsNearbyNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">是否侵占河湖水域岸线</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="occupiesWaterfront" value="是"> 是</label>
+                            <label><input type="radio" name="occupiesWaterfront" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="occupiesWaterfrontNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="occupiesWaterfrontNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">是否纳入变更管理</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="includedInChangeManagement" value="是"> 是</label>
+                            <label><input type="radio" name="includedInChangeManagement" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="changeManagementNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="changeManagementNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">临时措施是否满足要求</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="temporaryMeasuresMeetRequirements" value="是"> 是</label>
+                            <label><input type="radio" name="temporaryMeasuresMeetRequirements" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="temporaryMeasuresNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="temporaryMeasuresNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">挡渣工程是否满足要求</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="retainingWorksMeetRequirements" value="是"> 是</label>
+                            <label><input type="radio" name="retainingWorksMeetRequirements" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="retainingWorksNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="retainingWorksNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">防洪排导工程是否满足要求</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="floodControlMeetRequirements" value="是"> 是</label>
+                            <label><input type="radio" name="floodControlMeetRequirements" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="floodControlNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="floodControlNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">边坡防护工程是否满足要求</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="slopeProtectionMeetRequirements" value="是"> 是</label>
+                            <label><input type="radio" name="slopeProtectionMeetRequirements" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="slopeProtectionNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="slopeProtectionNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">植被恢复工程是否满足要求</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="vegetationRestorationMeetRequirements" value="是"> 是</label>
+                            <label><input type="radio" name="vegetationRestorationMeetRequirements" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="vegetationRestorationNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
+                        <label for="vegetationRestorationNote" class="form-label-float">情况说明</label>
+                    </div>
+                </div>
+
+                <div class="section-buttons">
+                    <button type="button" class="btn btn-edit" onclick="editForm()" style="display:none;">修改</button>
+                    <button type="submit" class="btn btn-save">保存</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>渣场图库</h2>
+                <div>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;" multiple>
+                    <button type="button" class="btn btn-function" onclick="triggerImageUpload(event)">上传图片</button>
+                    <button type="button" class="btn btn-function" onclick="deleteSelectedImages(event)">删除选中</button>
+                </div>
+                <div class="image-gallery">
+                    <table id="imageList">
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(event)"></th>
+                            <th>文件名</th>
+                            <th>上传时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let imageFiles = [];
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const files = event.target.files;
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newImage = {
+                        name: file.name,
+                        uploadTime: new Date().toLocaleString(),
+                        data: e.target.result
+                    };
+                    imageFiles.push(newImage);
+                    updateImageList();
+                    saveImagesToLocalStorage(); // 保存图片到 localStorage
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function updateImageList() {
+            const table = document.getElementById('imageList');
+            // 清除旧的行，保留表头
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            // 添加新的行
+            imageFiles.forEach((file, index) => {
+                const row = table.insertRow();
+                const checkCell = row.insertCell(0);
+                const nameCell = row.insertCell(1);
+                const timeCell = row.insertCell(2);
+                const actionCell = row.insertCell(3);
+
+                checkCell.innerHTML = `<input type="checkbox" name="imageSelect" value="${index}">`;
+                nameCell.textContent = file.name;
+                timeCell.textContent = file.uploadTime;
+                actionCell.innerHTML = `
+                    <button class="btn btn-function" onclick="previewImage(${index}, event)">预览</button>
+                    <button class="btn btn-function" onclick="downloadImage(${index}, event)">下载</button>
+                `;
+            });
+        }
+
+        function saveImagesToLocalStorage() {
+            const dumpId = new URLSearchParams(window.location.search).get('id') || Date.now().toString();
+            localStorage.setItem(`dumpImages_${dumpId}`, JSON.stringify(imageFiles));
+        }
+
+        function loadImagesFromLocalStorage() {
+            const dumpId = new URLSearchParams(window.location.search).get('id');
+            if (dumpId) {
+                const savedImages = localStorage.getItem(`dumpImages_${dumpId}`);
+                if (savedImages) {
+                    imageFiles = JSON.parse(savedImages);
+                    updateImageList();
+                }
+            }
+        }
+
+        function toggleSelectAll(event) {
+            event.preventDefault(); // 阻止事件冒泡
+            const checkboxes = document.getElementsByName('imageSelect');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            checkboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+        }
+
+        function deleteSelectedImages(event) {
+            event.preventDefault(); // 阻止事件冒泡
+            const checkboxes = document.getElementsByName('imageSelect');
+            const selectedIndexes = Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => parseInt(checkbox.value))
+                .sort((a, b) => b - a);
+
+            if (selectedIndexes.length === 0) {
+                alert('请选择要删除的图片');
+                return;
+            }
+
+            if (confirm(`确定要删除选中的 ${selectedIndexes.length} 张图片吗？`)) {
+                selectedIndexes.forEach(index => {
+                    imageFiles.splice(index, 1);
+                });
+                updateImageList();
+                saveImagesToLocalStorage(); // 保存更新后的图片数据
+            }
+        }
+
+        function previewImage(index, event) {
+            event.preventDefault(); // 阻止事件冒泡
+            const file = imageFiles[index];
+            
+            // 创建模态框
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+
+            // 创建图片元素
+            const img = document.createElement('img');
+            img.src = file.data;
+            img.style.maxWidth = '90%';
+            img.style.maxHeight = '90%';
+            img.style.objectFit = 'contain';
+            img.style.border = '5px solid white';
+
+            modal.appendChild(img);
+
+            // 创建关闭按钮
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '关闭';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '20px';
+            closeButton.style.right = '20px';
+            closeButton.style.padding = '10px 20px';
+            closeButton.style.backgroundColor = '#ff0000';
+            closeButton.style.color = 'white';
+            closeButton.style.border = 'none';
+            closeButton.style.cursor = 'pointer';
+
+            closeButton.onclick = function() {
+                document.body.removeChild(modal);
+            };
+
+            modal.appendChild(closeButton);
+            document.body.appendChild(modal);
+        }
+
+        function downloadImage(index, event) {
+            event.preventDefault(); // 阻止事件冒泡
+            const file = imageFiles[index];
+            const link = document.createElement('a');
+            link.href = file.data;
+            link.download = file.name;
+            link.click();
+        }
+
+        // 修改表单提交处理
+        document.getElementById('dumpForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            saveDumpData();
+        });
+
+        function saveDumpData() {
+            // 收集表单数据
+            const formData = new FormData(document.getElementById('dumpForm'));
+            const dumpData = Object.fromEntries(formData.entries());
+
+            // 获取现有的渣场数据
+            let dumps = JSON.parse(localStorage.getItem('dumps')) || [];
+
+            const isNewDump = localStorage.getItem('isNewDump') === 'true';
+
+            if (isNewDump) {
+                // 新建渣场
+                dumpData.dumpId = Date.now().toString();
+                dumps.push(dumpData);
+            } else {
+                // 更新现有渣场
+                const editIndex = dumps.findIndex(dump => dump.dumpId === dumpData.dumpId);
+                if (editIndex !== -1) {
+                    dumps[editIndex] = dumpData;
+                }
+            }
+
+            // 保存更新后的数据
+            localStorage.setItem('dumps', JSON.stringify(dumps));
+
+            // 清除 isNewDump 标志
+            localStorage.removeItem('isNewDump');
+
+            // 禁用表单字段
+            disableForm();
+
+            // 显示保存成功消息
+            alert('保存成功');
+        }
+
+        function disableForm() {
+            const form = document.getElementById('dumpForm');
+            const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+            document.querySelector('.btn-edit').style.display = 'inline-block';
+            document.querySelector('.btn-save').style.display = 'none';
+        }
+
+        function editForm() {
+            const form = document.getElementById('dumpForm');
+            const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+            document.querySelector('.btn-edit').style.display = 'none';
+            document.querySelector('.btn-save').style.display = 'inline-block';
+        }
+
+        function triggerImageUpload(event) {
+            event.preventDefault(); // 阻止事件冒泡
+            document.getElementById('imageUpload').click();
+        }
+
+        // 页面加载时的处理
+        window.addEventListener('load', function() {
+            loadImagesFromLocalStorage();
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('id');
+            const isNewDump = localStorage.getItem('isNewDump') === 'true';
+
+            if (!isNewDump && editId) {
+                // 编辑模式
+                loadDumpData(editId);
+                disableForm();
+            } else {
+                // 新建模式
+                document.querySelector('.btn-edit').style.display = 'none';
+                document.querySelector('.btn-save').style.display = 'inline-block';
+            }
+        });
+
+        function loadDumpData(dumpId) {
+            const dumps = JSON.parse(localStorage.getItem('dumps')) || [];
+            const dumpData = dumps.find(dump => dump.dumpId === dumpId);
+
+            if (dumpData) {
+                Object.keys(dumpData).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'radio') {
+                            document.querySelector(`[name="${key}"][value="${dumpData[key]}"]`).checked = true;
+                        } else {
+                            element.value = dumpData[key];
+                        }
+                    }
+                });
+            }
+        }
+
+        // 添加以下 JavaScript 代码来自动调整 textarea 的高度
+        document.querySelectorAll('.form-input-underline').forEach(function(textarea) {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                // 确保最小高度
+                if (this.scrollHeight < 30) {
+                    this.style.height = '30px';
+                }
+                // 当有内容时隐藏标签
+                if (this.value.trim() !== '') {
+                    this.nextElementSibling.style.opacity = '0';
+                } else {
+                    this.nextElementSibling.style.opacity = '1';
+                }
+            });
+            // 初始化时触发一次以设置正确的高度和标签可见性
+            textarea.dispatchEvent(new Event('input'));
+        });
+    </script>
+</body>
+</html>

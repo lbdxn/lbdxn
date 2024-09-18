@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成果提交 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>成果提交</h1>
+        </header>
+        <form id="resultsForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>成果信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">成果名称</span>
+                        <input type="text" name="resultName" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label required">提交日期</span>
+                        <input type="date" name="submissionDate" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">成果类型</span>
+                        <select name="resultType" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="报告">报告</option>
+                            <option value="图纸">图纸</option>
+                            <option value="数据">数据</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">审核状态</span>
+                        <select name="reviewStatus" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="待审核">待审核</option>
+                            <option value="审核通过">审核通过</option>
+                            <option value="需修改">需修改</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">成果描述</span>
+                        <textarea name="resultDescription" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">备注</span>
+                        <textarea name="remarks" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" onclick="location.href='project-form.html'">返回项目</button>
+                <button type="button" onclick="enableEdit()">修改</button>
+                <button type="submit">保存</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        document.getElementById('projectId').value = projectId;
+
+        function loadResultsData() {
+            const resultsData = JSON.parse(localStorage.getItem(`results_${projectId}`)) || {};
+            Object.keys(resultsData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = resultsData[key];
+                }
+            });
+            disableForm();
+        }
+
+        function disableForm() {
+            const inputs = document.querySelectorAll('#resultsForm input, #resultsForm select, #resultsForm textarea');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#resultsForm input, #resultsForm select, #resultsForm textarea');
+            inputs.forEach(input => input.disabled = false);
+        }
+
+        document.getElementById('resultsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const resultsData = Object.fromEntries(formData.entries());
+            localStorage.setItem(`results_${projectId}`, JSON.stringify(resultsData));
+            alert('保存成功');
+            disableForm();
+        });
+
+        window.onload = loadResultsData;
+    </script>
+</body>
+</html>

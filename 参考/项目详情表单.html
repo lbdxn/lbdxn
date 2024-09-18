@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>项目详情表单 - 委外项目管理系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            width: 400px;
+        }
+        .form-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <input type="text" id="projectName" placeholder="项目名称">
+    <input type="text" id="outsourcingCompany" placeholder="委外单位名称">
+    <textarea id="projectDescription" placeholder="工程状态"></textarea>
+    <button onclick="saveProject()">保存</button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get('id');
+    const isNew = urlParams.get('new');
+
+    if (projectId) {
+        fetchProjectDetails(projectId);
+    }
+
+    function fetchProjectDetails(id) {
+        const token = localStorage.getItem('token');
+        fetch(`/api/projects/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(project => {
+            document.getElementById('projectName').value = project.name;
+            document.getElementById('outsourcingCompany').value = project.outsourcingCompany;
+            document.getElementById('projectDescription').value = project.description;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    window.saveProject = function() {
+        const name = document.getElementById('projectName').value;
+        const outsourcingCompany = document.getElementById('outsourcingCompany').value;
+        const description = document.getElementById('projectDescription').value;
+        const token = localStorage.getItem('token');
+
+        const projectData = { name, outsourcingCompany, description };
+
+        if (isNew) {
+            fetch('/api/projects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(projectData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('项目创建成功');
+                window.location.href = '主页.html';
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+            fetch(`/api/projects/${projectId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(projectData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('项目更新成功');
+                window.location.href = '主页.html';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+});
+</script>
+
+</body>
+</html>

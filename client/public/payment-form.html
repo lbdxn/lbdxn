@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付管理 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>支付管理</h1>
+        </header>
+        <form id="paymentForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>支付信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">支付金额</span>
+                        <input type="number" name="paymentAmount" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label required">支付日期</span>
+                        <input type="date" name="paymentDate" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">支付类型</span>
+                        <select name="paymentType" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="预付款">预付款</option>
+                            <option value="进度款">进度款</option>
+                            <option value="尾款">尾款</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">支付状态</span>
+                        <select name="paymentStatus" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="待支付">待支付</option>
+                            <option value="已支付">已支付</option>
+                            <option value="支付失败">支付失败</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">支付说明</span>
+                        <textarea name="paymentDescription" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" onclick="location.href='project-form.html'">返回项目</button>
+                <button type="button" onclick="enableEdit()">修改</button>
+                <button type="submit">保存</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        document.getElementById('projectId').value = projectId;
+
+        function loadPaymentData() {
+            const paymentData = JSON.parse(localStorage.getItem(`payment_${projectId}`)) || {};
+            Object.keys(paymentData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = paymentData[key];
+                }
+            });
+            disableForm();
+        }
+
+        function disableForm() {
+            const inputs = document.querySelectorAll('#paymentForm input, #paymentForm select, #paymentForm textarea');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#paymentForm input, #paymentForm select, #paymentForm textarea');
+            inputs.forEach(input => input.disabled = false);
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const paymentData = Object.fromEntries(formData.entries());
+            localStorage.setItem(`payment_${projectId}`, JSON.stringify(paymentData));
+            alert('保存成功');
+            disableForm();
+        });
+
+        window.onload = loadPaymentData;
+    </script>
+</body>
+</html>

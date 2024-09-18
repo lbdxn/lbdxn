@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff; /* 纯白色背景 */
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    gap: 5%; /* 减少图片和登录框的距离 */
+}
+
+.image-container {
+    width: 500px; /* 增加图片容器宽度 */
+    height: 300px; /* 减少图片容器高度 */
+    background-image: url('../images/图片1.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.right-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 居中对齐 */
+    width: 350px; /* 设置固定宽度 */
+}
+
+.title-container {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center; /* 标题居中 */
+}
+
+.login-container {
+    width: 80%; /* 登录框容器宽度缩小到80% */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 改为 flex-start 以便向上移动标题 */
+    padding: 20px 0; /* 增加顶部内边距 */
+}
+
+.login-box {
+    width: 80%;
+    max-width: 400px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px; /* 增加底部边距 */
+    color: #333;
+    font-size: 33px; /* 增加字体大小 */
+    font-weight: bold; /* 加粗字体 */
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    background-color: #fff; /* 保持输入框背景为白色 */
+}
+
+input:focus {
+    border-color: #1a73e8;
+}
+
+label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #999;
+    pointer-events: none;
+    transition: 0.2s ease all;
+}
+
+input:focus ~ label,
+input:valid ~ label {
+    top: 0;
+    font-size: 12px;
+    color: #1a73e8;
+    background-color: #ffffff; /* 匹配新的背景颜色 */
+    padding: 0 5px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #1669d6;
+}
+
+.additional-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.additional-links a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.additional-links a:hover {
+    text-decoration: underline;
+}
+
+.message {
+    margin-top: 20px;
+    text-align: center;
+    color: #d32f2f;
+    font-size: 14px;
+}

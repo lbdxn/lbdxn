@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目基本情况 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+           margin: 0 auto;
+           padding: 0 20px;
+        }
+    padding: 0 20px;
+        header {
+            background-color: #1e88e5;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px 8px 0 0;
+        }
+        h1, h2 {
+            margin-bottom: 1rem;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px; /* 统一的行间距 */
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 15px;
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .form-row.four-column {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .form-row.four-column .form-field {
+            flex: 0 0 25%; /* 固定第一列宽度为25% */
+            margin-right: 15px;
+            white-space: nowrap; /* 防止文字换行 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 文字溢出时显示省略号 */
+            font-size: 14px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            font-weight: bold;
+        }
+        .form-row.four-column .form-group {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-row.four-column .form-group:last-child {
+            margin-right: 0;
+        }
+        .input-wrapper {
+            width: 100%;
+        }
+        .form-label {
+            flex: 0 0 30%;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            font-weight: bold;
+        }
+        .form-input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 0 4px 4px 0;
+        }
+        .required::after {
+            content: "*";
+            color: #e53935;
+            margin-left: 5px;
+        }
+        button[type="submit"] {
+            background-color: #1e88e5;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #1565c0;
+        }
+        .section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+            background-color: transparent;
+            color: #333;
+        }
+        .nav-tab.active {
+            color: #f8fbfd;
+            font-weight: bold;
+        }
+        .nav-tab:hover {
+            color: #1e88e5;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                justify-content: flex-start;
+            }
+            .nav-tab {
+                flex: 0 0 auto;
+            }
+        }
+        
+        .text-field {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+            user-select: none;
+        }
+        .combined-field {
+            display: flex;
+            justify-content: space-between;
+        }
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .input-wrapper label {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .input-wrapper input:focus,
+        .input-wrapper input:not(:placeholder-shown) {
+            border-color: #4285f4;
+            outline: none;
+        }
+        .input-wrapper input:focus + label,
+        .input-wrapper input:not(:placeholder-shown) + label {
+            top: -12px;
+            left: 5px;
+            font-size: 12px;
+            color: #4285f4;
+            background-color: white;
+            padding: 0 5px;
+        }
+        .fixed-label {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            line-height: 1.5;
+        }
+        textarea.form-output {
+            width: 100%;
+            resize: horizontal; /* 允许水平方向调整大小 */
+            min-height: 100px;
+        }
+        /* 调整整体布局，使其更紧凑 */
+        .section {
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        /* 添加上传下载按钮样式 */
+        .file-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .file-actions button {
+            padding: 5px 10px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .file-actions button:hover {
+            background-color: #3367d6;
+        }
+
+        .form-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-label {
+            flex: 0 0 30%;
+            margin-right: 10px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        /* 项目概况样式调整 */
+        .project-overview {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-overview .form-label {
+            margin-bottom: 10px;
+        }
+
+        .project-overview textarea {
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .project-overview {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        .project-overview .form-label {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            display: block;
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        .project-overview textarea {
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
+            border: 1px solid #ddd;
+            border-radius: 0 4px 4px 4px;
+            padding: 10px;
+        }
+
+        .section-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .section-buttons button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .section-buttons button:hover {
+            background-color: #3367d6;
+        }
+
+        .section-buttons button.edit {
+            background-color: #34a853;
+        }
+
+        .section-buttons button.edit:hover {
+            background-color: #2d8e4a;
+        }
+      .global-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            padding-right: 20px;
+            max-width: 1200px; /* 限制最大宽度 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .global-buttons button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: hsl(290, 72%, 76%);
+            color: #333;
+            white-space: nowrap; /* 防止按钮文字换行 */
+        }
+        .global-buttons button:hover {
+            background-color: #43a047;
+        }
+        .global-buttons .edit {
+            background-color: #5fe8c1;
+            color: white;
+        }
+        .global-buttons .edit:hover {
+            background-color: #1976d2;
+        }
+        .global-buttons .save {
+            background-color: #43a047;
+            color: white;
+        }
+        .global-buttons .save:hover {
+            background-color: #388e3c;
+        }
+
+        /* 确保容器有合适的样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            overflow-x: hidden; /* 防止水平滚动 */
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>委外项目管理系统</h1>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="basic">基本情况</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='compliance-form.html'">履约情况</button>
+            <button class="nav-tab" onclick="location.href='risk-form.html'">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-form.html'">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-form.html'">成果提交</button>
+            <button class="nav-tab" onclick="location.href='payment-form.html'">支付管理</button>
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+        </div>
+         <!-- 新增全局控制按钮 -->
+         <div class="global-buttons">
+            <button type="button" class="edit" onclick="editAllSections()">修改</button>
+            <button type="button" onclick="saveAllSections()">保存</button>
+         </div>
+        <form id="projectForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>项目基本信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">项目名称</span>
+                        <input type="text" name="projectName" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">项目类型</span>
+                        <input type="text" name="projectType" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">项目编码</span>
+                        <input type="text" name="projectCode" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">合同签订时间</span>
+                        <input type="date" name="contractSignDate" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">承接合同编码</span>
+                        <input type="text" name="contractCode" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">建设单位名称</span>
+                        <input type="text" name="constructionUnitName" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">建设单位联系人</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="constructionUnitContact" id="constructionUnitContact" required placeholder=" ">
+                            <label for="constructionUnitContact">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="constructionUnitPosition" id="constructionUnitPosition" required placeholder=" ">
+                            <label for="constructionUnitPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="constructionUnitPhone" id="constructionUnitPhone" required placeholder=" ">
+                            <label for="constructionUnitPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">承接合同金额</span>
+                        <input type="number" name="contractAmount" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">预计结束日期</span>
+                        <input type="date" name="estimatedEndDate" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">合同工期</span>
+                        <input type="text" name="contractPeriod" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">履约保证金</span>
+                        <select name="performanceBond" class="form-input">
+                            <option value="现金转账">现金转账</option>
+                            <option value="履约保函">履约保函</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">保证金额</span>
+                        <input type="number" name="bondAmount" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row project-overview">
+                    <span class="form-label">项目概况</span>
+                    <textarea name="projectOverview" rows="5" class="form-input"></textarea>
+                </div>
+                
+            </div>
+            <div class="section">
+                <h2>委外合同信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">委外合同名称</span>
+                        <input type="text" name="outsourcingContractName" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label required">委外单位名称</span>
+                        <input type="text" name="outsourcingUnitName" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">委外合同编码</span>
+                        <input type="text" name="outsourcingContractCode" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">履约开始日期</span>
+                        <input type="date" name="performanceStartDate" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">委外合同金额</span>
+                        <input type="number" name="outsourcingContractAmount" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label required">工程状态</span>
+                        <select name="projectStatus" class="form-input" required>
+                            <option value="">请选择</option>
+                            <option value="未开工">未开工</option>
+                            <option value="在建">在建</option>
+                            <option value="已完工">已完工</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">委外单位负责人</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingResponsiblePerson" id="outsourcingResponsiblePerson" required placeholder=" ">
+                            <label for="outsourcingResponsiblePerson">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingPosition" id="outsourcingPosition" required placeholder=" ">
+                            <label for="outsourcingPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingPhone" id="outsourcingPhone" required placeholder=" ">
+                            <label for="outsourcingPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">委外单位联系人</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContact" id="outsourcingContact" required placeholder=" ">
+                            <label for="outsourcingContact">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPosition" id="outsourcingContactPosition" required placeholder=" ">
+                            <label for="outsourcingContactPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPhone" id="outsourcingContactPhone" required placeholder=" ">
+                            <label for="outsourcingContactPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">成都院项目负责人</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContact" required placeholder=" ">
+                            <label for="outsourcingContact">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPosition" required placeholder=" ">
+                            <label for="outsourcingContactPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPhone" required placeholder=" ">
+                            <label for="outsourcingContactPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">业主环水保分管领导</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContact" required placeholder=" ">
+                            <label for="outsourcingContact">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPosition" required placeholder=" ">
+                            <label for="outsourcingContactPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPhone" required placeholder=" ">
+                            <label for="outsourcingContactPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">业主部门负责人</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContact" required placeholder=" ">
+                            <label for="outsourcingContact">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPosition" required placeholder=" ">
+                            <label for="outsourcingContactPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPhone" required placeholder=" ">
+                            <label for="outsourcingContactPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row four-column">
+                    <div class="form-field">
+                        <span class="form-label">业主环水保联系人</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContact" required placeholder=" ">
+                            <label for="outsourcingContact">姓名</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPosition" required placeholder=" ">
+                            <label for="outsourcingContactPosition">职务</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="outsourcingContactPhone" required placeholder=" ">
+                            <label for="outsourcingContactPhone">联系方式</label>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>    
+            <div class="section">
+                <h2>环保信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">环评报告书及批复</span>
+                        <div class="input-group">
+                            <input type="text" name="environmentalReport" class="form-input">
+                            <div class="file-actions">
+                                <button type="button" onclick="uploadFile('environmentalReport')">上传</button>
+                                <button type="button" onclick="downloadFile('environmentalReport')">下载</button>
+                                <button type="button" onclick="deleteFile('environmentalReport')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field combined-field">
+                        <div class="input-wrapper">
+                            <input type="text" name="environmentalReportApprovalUnit" required placeholder=" ">
+                            <label for="environmentalReportApprovalUnit">审批单位</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="date" name="reportApprovalDate" class="form-input" placeholder="批复时间">
+                            <label for="reportApprovalDate">批复时间</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">环评变更及批复</span>
+                        <div class="input-group">
+                            <input type="text" name="environmentalChangeApproval" class="form-input">
+                            <div class="file-actions">
+                                <button type="button" onclick="uploadFile('changeApproval')">上传</button>
+                                <button type="button" onclick="downloadFile('changeApproval')">下载</button>
+                                <button type="button" onclick="deleteFile('changeApproval')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field combined-field">
+                        <div class="input-wrapper">
+                            <input type="text" name="changeApprovalUnit" required placeholder=" ">
+                            <label for="changeApprovalUnit">审批单位</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="date" name="changeApprovalDate" class="form-input" placeholder="批复时间">
+                            <label for="changeApprovalDate">批复时间</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">水保报告书及批复</span>
+                        <div class="input-group">
+                            <input type="text" name="waterReport" class="form-input">
+                            <div class="file-actions">
+                                <button type="button" onclick="uploadFile('waterReport')">上传</button>
+                                <button type="button" onclick="downloadFile('waterReport')">下载</button>
+                                <button type="button" onclick="deleteFile('waterReport')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field combined-field">
+                        <div class="input-wrapper">
+                            <input type="text" name="waterReportApprovalUnit" required placeholder=" ">
+                            <label for="waterReportApprovalUnit">审批单位</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="date" name="waterReportApprovalDate" class="form-input" placeholder="批复时间">
+                            <label for="waterReportApprovalDate">批复时间</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">水保变更及批复</span>
+                        <div class="input-group">
+                            <input type="text" name="waterChangeApproval" class="form-input">
+                            <div class="file-actions">
+                                <button type="button" onclick="uploadFile('waterChangeApproval')">上传</button>
+                                <button type="button" onclick="downloadFile('waterChangeApproval')">下载</button>
+                                <button type="button" onclick="deleteFile('waterChangeApproval')">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field combined-field">
+                        <div class="input-wrapper">
+                            <input type="text" name="waterChangeApprovalUnit" required placeholder=" ">
+                            <label for="waterChangeApprovalUnit">审批单位</label>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="date" name="waterChangeApprovalDate" class="form-input" placeholder="批复时间">
+                            <label for="waterChangeApprovalDate">批复时间</label>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+    <script type="module">
+        import { uploadFile, downloadFile, deleteFile, editSection, saveSection } from './js/project-form.js';
+
+        // 将这些函数添加到全局作用域，以便 HTML 中的 onclick 事件可以访问它们
+        window.uploadFile = uploadFile;
+        window.downloadFile = downloadFile;
+        window.deleteFile = deleteFile;
+        window.editSection = editSection;
+        window.saveSection = saveSection;
+    </script>
+</body>
+</html>

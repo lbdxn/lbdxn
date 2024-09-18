@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>委外项目管理系统</h1>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="用户名" required>
+            <input type="password" id="password" placeholder="密码" required>
+            <button type="submit">登录</button>
+        </form>
+        <p id="message"></p>
+        <div class="links">
+            <a href="#" id="forgotPassword">忘记密码？</a>
+            <a href="#" id="register">注册账号</a>
+        </div>
+    </div>
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>项目详情 - 委外项目管理系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .nav-buttons a, .btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-buttons a:hover, .btn:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            width: 25%;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>项目详情</h1>
+        <div class="nav-buttons">
+            <a href="#" id="saveBtn">保存</a>
+            <a href="主页.html">返回主页</a>
+        </div>
+    </div>
+    <form id="projectForm">
+        <h2>项目基本信息</h2>
+        <table>
+            <tr>
+                <th>项目名称</th>
+                <td><input type="text" id="name" required></td>
+                <th>项目编码</th>
+                <td><input type="text" id="code" required></td>
+            </tr>
+            <tr>
+                <th>项目类型</th>
+                <td><input type="text" id="type" required></td> <!-- 添加 required 属性 -->
+                <th>承接合同编码</th>
+                <td><input type="text" id="contractCode" required></td> <!-- 添加 required 属性 -->
+            </tr>
+            <tr>
+                <th>合同签订时间</th>
+                <td><input type="date" id="contractSignDate"></td>
+                <th>建设单位名称</th>
+                <td><input type="text" id="clientName"></td>
+            </tr>
+            <tr>
+                <th>联系人</th>
+                <td><input type="text" id="contactPerson"></td>
+                <th>联系方式</th>
+                <td><input type="text" id="contactNumber"></td>
+            </tr>
+            <tr>
+                <th>承接合同金额</th>
+                <td><input type="number" id="contractAmount"></td>
+                <th>预计结束日期</th>
+                <td><input type="date" id="expectedEndDate"></td>
+            </tr>
+            <tr>
+                <th>合同工期</th>
+                <td><input type="text" id="contractDuration"></td>
+                <th>履约保证金</th>
+                <td>
+                    <label><input type="radio" name="bondType" value="cash"> 现金转账</label>
+                    <label><input type="radio" name="bondType" value="guarantee"> 履约保函</label>
+                </td>
+            </tr>
+            <tr>
+                <th>保证金金额</th>
+                <td><input type="number" id="bondAmount"></td>
+                <th>项目概况</th>
+                <td><input type="text" id="description"></td>
+            </tr>
+        </table>
+
+        <h2>委外合同信息</h2>
+        <table>
+            <tr>
+                <th>委外合同名称</th>
+                <td><input type="text" id="outsourcingContractName"></td>
+                <th>委外合同编码</th>
+                <td><input type="text" id="outsourcingContractCode"></td>
+            </tr>
+            <tr>
+                <th>委外单位名称</th>
+                <td><input type="text" id="outsourcingCompany" required></td>
+                <th>委外单位联系人</th>
+                <td><input type="text" id="outsourcingContactPerson"></td>
+            </tr>
+            <tr>
+                <th>委外单位联系方式</th>
+                <td><input type="text" id="outsourcingContactNumber"></td>
+                <th>成都院联系人</th>
+                <td><input type="text" id="chengduContactPerson"></td>
+            </tr>
+            <tr>
+                <th>成都院联系方式</th>
+                <td><input type="text" id="chengduContactNumber"></td>
+                <th>委外合同金额</th>
+                <td><input type="number" id="outsourcingContractAmount"></td>
+            </tr>
+            <tr>
+                <th>履约开始日期</th>
+                <td><input type="date" id="performanceStartDate"></td>
+                <th></th>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+let projectId = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    projectId = urlParams.get('id');
+
+    if (projectId) {
+        fetchProjectDetails(projectId);
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', saveProject);
+});
+
+function fetchProjectDetails(id) {
+    const token = localStorage.getItem('token');
+    fetch(`/api/projects/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(project => {
+        document.getElementById('name').value = project.name;
+        document.getElementById('code').value = project.code;
+        document.getElementById('type').value = project.type;
+        document.getElementById('contractCode').value = project.contractCode;
+        document.getElementById('clientName').value = project.clientName;
+        document.getElementById('contactPerson').value = project.contactPerson;
+        document.getElementById('contactNumber').value = project.contactNumber;
+        document.getElementById('contractAmount').value = project.contractAmount;
+        document.getElementById('expectedEndDate').value = project.expectedEndDate ? new Date(project.expectedEndDate).toISOString().split('T')[0] : '';
+        document.getElementById('contractDuration').value = project.contractDuration;
+        document.querySelector(`input[name="bondType"][value="${project.bondType}"]`).checked = true;
+        document.getElementById('bondAmount').value = project.bondAmount;
+        document.getElementById('description').value = project.description;
+        document.getElementById('outsourcingContractName').value = project.outsourcingContractName;
+        document.getElementById('outsourcingContractCode').value = project.outsourcingContractCode;
+        document.getElementById('outsourcingCompany').value = project.outsourcingCompany;
+        document.getElementById('outsourcingContactPerson').value = project.outsourcingContactPerson;
+        document.getElementById('outsourcingContactNumber').value = project.outsourcingContactNumber;
+        document.getElementById('chengduContactPerson').value = project.chengduContactPerson;
+        document.getElementById('chengduContactNumber').value = project.chengduContactNumber;
+        document.getElementById('outsourcingContractAmount').value = project.outsourcingContractAmount;
+        document.getElementById('performanceStartDate').value = project.performanceStartDate ? new Date(project.performanceStartDate).toISOString().split('T')[0] : '';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function saveProject() {
+    const token = localStorage.getItem('token');
+    const projectData = {
+        name: document.getElementById('name').value,
+        code: document.getElementById('code').value,
+        type: document.getElementById('type').value,
+        contractCode: document.getElementById('contractCode').value,
+        contractSignDate: document.getElementById('contractSignDate').value,
+        clientName: document.getElementById('clientName').value,
+        contactPerson: document.getElementById('contactPerson').value,
+        contactNumber: document.getElementById('contactNumber').value,
+        contractAmount: document.getElementById('contractAmount').value,
+        expectedEndDate: document.getElementById('expectedEndDate').value,
+        contractDuration: document.getElementById('contractDuration').value,
+        bondType: document.querySelector('input[name="bondType"]:checked').value,
+        bondAmount: document.getElementById('bondAmount').value,
+        description: document.getElementById('description').value,
+        outsourcingContractName: document.getElementById('outsourcingContractName').value,
+        outsourcingContractCode: document.getElementById('outsourcingContractCode').value,
+        outsourcingCompany: document.getElementById('outsourcingCompany').value,
+        outsourcingContactPerson: document.getElementById('outsourcingContactPerson').value,
+        outsourcingContactNumber: document.getElementById('outsourcingContactNumber').value,
+        chengduContactPerson: document.getElementById('chengduContactPerson').value,
+        chengduContactNumber: document.getElementById('chengduContactNumber').value,
+        outsourcingContractAmount: document.getElementById('outsourcingContractAmount').value,
+        performanceStartDate: document.getElementById('performanceStartDate').value
+    };
+
+    fetch(`/api/projects${projectId ? `/${projectId}` : ''}`, {
+        method: projectId ? 'PUT' : 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(projectData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 保存项目名称和委外单位名称到 localStorage
+        const projects = JSON.parse(localStorage.getItem('projects')) || [];
+        projects.push({
+            id: data.id,
+            name: projectData.name,
+            outsourcingCompany: projectData.outsourcingCompany
+        });
+        localStorage.setItem('projects', JSON.stringify(projects));
+
+        alert(projectId ? '项目更新成功' : '项目创建成功');
+        window.location.href = '主页.html';
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+</body>
+</html>

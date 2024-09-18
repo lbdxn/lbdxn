@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险识别 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>风险识别</h1>
+        </header>
+        <form id="riskForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>风险信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">风险类型</span>
+                        <select name="riskType" class="form-input" required>
+                            <option value="">请选择</option>
+                            <option value="技术风险">技术风险</option>
+                            <option value="进度风险">进度风险</option>
+                            <option value="成本风险">成本风险</option>
+                            <option value="质量风险">质量风险</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">风险等级</span>
+                        <select name="riskLevel" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="高">高</option>
+                            <option value="中">中</option>
+                            <option value="低">低</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">风险描述</span>
+                        <textarea name="riskDescription" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">应对措施</span>
+                        <textarea name="riskMitigation" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" onclick="location.href='project-form.html'">返回项目</button>
+                <button type="button" onclick="enableEdit()">修改</button>
+                <button type="submit">保存</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        document.getElementById('projectId').value = projectId;
+
+        function loadRiskData() {
+            const riskData = JSON.parse(localStorage.getItem(`risk_${projectId}`)) || {};
+            Object.keys(riskData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = riskData[key];
+                }
+            });
+            disableForm();
+        }
+
+        function disableForm() {
+            const inputs = document.querySelectorAll('#riskForm input, #riskForm select, #riskForm textarea');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#riskForm input, #riskForm select, #riskForm textarea');
+            inputs.forEach(input => input.disabled = false);
+        }
+
+        document.getElementById('riskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const riskData = Object.fromEntries(formData.entries());
+            localStorage.setItem(`risk_${projectId}`, JSON.stringify(riskData));
+            alert('保存成功');
+            disableForm();
+        });
+
+        window.onload = loadRiskData;
+    </script>
+</body>
+</html>

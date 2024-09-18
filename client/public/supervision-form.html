@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监督检查 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>监督检查</h1>
+        </header>
+        <form id="supervisionForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>检查信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">检查日期</span>
+                        <input type="date" name="inspectionDate" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label required">检查人员</span>
+                        <input type="text" name="inspector" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">检查类型</span>
+                        <select name="inspectionType" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="常规检查">常规检查</option>
+                            <option value="专项检查">专项检查</option>
+                            <option value="突击检查">突击检查</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">检查结果</span>
+                        <select name="inspectionResult" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="合格">合格</option>
+                            <option value="不合格">不合格</option>
+                            <option value="需整改">需整改</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">检查内容</span>
+                        <textarea name="inspectionContent" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">整改建议</span>
+                        <textarea name="improvementSuggestions" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" onclick="location.href='project-form.html'">返回项目</button>
+                <button type="button" onclick="enableEdit()">修改</button>
+                <button type="submit">保存</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        document.getElementById('projectId').value = projectId;
+
+        function loadSupervisionData() {
+            const supervisionData = JSON.parse(localStorage.getItem(`supervision_${projectId}`)) || {};
+            Object.keys(supervisionData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = supervisionData[key];
+                }
+            });
+            disableForm();
+        }
+
+        function disableForm() {
+            const inputs = document.querySelectorAll('#supervisionForm input, #supervisionForm select, #supervisionForm textarea');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#supervisionForm input, #supervisionForm select, #supervisionForm textarea');
+            inputs.forEach(input => input.disabled = false);
+        }
+
+        document.getElementById('supervisionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const supervisionData = Object.fromEntries(formData.entries());
+            localStorage.setItem(`supervision_${projectId}`, JSON.stringify(supervisionData));
+            alert('保存成功');
+            disableForm();
+        });
+
+        window.onload = loadSupervisionData;
+    </script>
+</body>
+</html>

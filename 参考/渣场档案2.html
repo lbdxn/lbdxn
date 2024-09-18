@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>渣场档案2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* 背景颜色 */
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+        .container {
+            width: 80%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        .header {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .nav-buttons a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: gray;
+            color: white;
+            border-radius: 5px;
+        }
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1em; /* 表格字体大小 */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .checkbox-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .checkbox-group input {
+            margin: 0 5px;
+        }
+        .shrink {
+            white-space: nowrap;
+            width: 20%; /* 将第一列的宽度设置为20% */
+        }
+        .expand {
+            width: 30%; /* 将其他列的宽度设置为40% */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">渣场档案</div>
+    <div class="nav-buttons">
+        <a href="渣场档案.html">返回上一页</a>
+    </div>
+    <table>
+        <tr>
+            <th class="shrink">渣场名称</th>
+            <td class="expand" colspan="1"></td>
+            <th class="shrink">渣场类型</th>
+            <td class="expand" colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="shrink">所在位置</th>
+            <td class="expand" colspan="1"></td>
+            <th class="shrink">经纬度</th>
+            <td class="expand" colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="shrink">所属标段</th>
+            <td class="expand" colspan="1"></td>
+            <th class="shrink">所属单位</th>
+            <td class="expand" colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="shrink">是否属设计渣场</th>
+            <td class="expand" colspan="1"><input type="radio" name="design" value="yes">是 <input type="radio" name="design" value="no">否</td>
+            <th class="shrink">设计堆渣高度</th>
+            <td class="expand" colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="shrink">设计堆渣量</th>
+            <td class="expand" colspan="1"></td>
+            <th class="shrink">实际堆渣高度</th>
+            <td class="expand" colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="shrink">实际堆渣量</th>
+            <td class="expand" colspan="1"></td>
+        </tr>
+        <tr>
+            <th class="shrink">是否有稳评报告</th>
+            <td class="expand" colspan="1"><input type="radio" name="report" value="yes">是 <input type="radio" name="report" value="no">否</td>
+            <td class="expand" colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">是否有地质灾害隐患</th>
+            <td class="expand" colspan="1"><input type="radio" name="hazard" value="yes">是 <input type="radio" name="hazard" value="no">否</td>
+            <td class="expand" colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">是否在安全距离内有居民</th>
+            <td class="expand" colspan="1"><input type="radio" name="residents" value="yes">是 <input type="radio" name="residents" value="no">否</td>
+            <td class="expand" colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">是否侵占河湖水或岸线</th>
+            <td class="expand" colspan="1"><input type="radio" name="water" value="yes">是 <input type="radio" name="water" value="no">否</td>
+            <td class="expand" colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">是否纳入变更管理</th>
+            <td class="expand" colspan="1"><input type="radio" name="change" value="yes">是 <input type="radio" name="change" value="no">否</td>
+            <td class="expand" colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">临时措施是否满足要求</th>
+            <td class="checkbox-group"><input type="radio" name="temporary" value="yes">是 <input type="radio" name="temporary" value="no">否</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">挡渣工程是否满足要求</th>
+            <td class="checkbox-group"><input type="radio" name="block" value="yes">是 <input type="radio" name="block" value="no">否</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">防洪排导工程是否满足要求</th>
+            <td class="checkbox-group"><input type="radio" name="flood" value="yes">是 <input type="radio" name="flood" value="no">否</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">边坡防护工程是否满足要求</th>
+            <td class="checkbox-group"><input type="radio" name="slope" value="yes">是 <input type="radio" name="slope" value="no">否</td>
+            <td colspan="3"></td>
+        </tr>
+        <tr>
+            <th class="shrink">植被恢复工程是否满足要求</th>
+            <td class="checkbox-group"><input type="radio" name="vegetation" value="yes">是 <input type="radio" name="vegetation" value="no">否</td>
+            <td colspan="3"></td>
+        </tr>
+    </table>
+    <div class="header">渣场图库</div>
+</div>
+
+<script>
+    // 检查用户是否登录
+    if (!localStorage.getItem('token')) {
+        alert('请先登录');
+        window.location.href = '/login.html';
+    }
+</script>
+
+</body>
+</html>
