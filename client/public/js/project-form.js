@@ -3,190 +3,95 @@ import { apiRequest } from './api.service.js';
 
 console.log('project-form.js loaded');
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('project-form.js DOMContentLoaded event fired');
+document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get('id');
-
-    console.log('projectId:', projectId);
+    const mode = urlParams.get('mode');
 
     if (projectId) {
-        loadProjectData(projectId);
+        try {
+            const projectData = loadProjectData(projectId);
+            fillFormWithProjectData(projectData);
+            if (mode === 'view') {
+                disableFormInputs();
+            }
+        } catch (error) {
+            console.error('Error loading project data:', error);
+            alert('无法加载项目数据');
+        }
+    } else {
+        // 新建项目模式
+        const projectNameInput = document.querySelector('input[name="projectName"]');
+        projectNameInput.addEventListener('blur', checkProjectNameExists);
     }
 });
 
-async function loadProjectData(projectId) {
-    try {
-        const response = await fetch(`/api/projects/${projectId}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const project = await response.json();
-        fillFormWithProjectData(project);
-    } catch (error) {
-        console.error('Error loading project data:', error);
-        alert('加载项目数据时出错，请稍后再试。');
+function loadProjectData(projectId) {
+    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+    const project = projects.find(p => p.projectId === projectId);
+    if (project) {
+        return project;
+    } else {
+        throw new Error('Project not found');
     }
 }
 
-function fillFormWithProjectData(project) {
+function fillFormWithProjectData(data) {
     const form = document.getElementById('projectForm');
-    Object.keys(project).forEach(key => {
+    for (const [key, value] of Object.entries(data)) {
         const field = form.elements[key];
         if (field) {
-            field.value = project[key];
-            if (project[key]) {
-                field.parentNode.classList.add('focused');
-            }
+            field.value = value;
         }
-    });
-    disableFormEditing();
+    }
 }
 
-function saveProject() {
-    return new Promise((resolve, reject) => {
-        const form = document.getElementById('projectForm');
-        const formData = new FormData(form);
-        const projectData = Object.fromEntries(formData.entries());
-        
-        const url = projectData.id ? `/api/projects/${projectData.id}` : '/api/projects';
-        const method = projectData.id ? 'PUT' : 'POST';
-        
-        fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(projectData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(savedProject => {
-            resolve(savedProject);
-        })
-        .catch(error => {
-            console.error('Error saving project:', error);
-            reject(new Error('保存项目时出错，请稍后再试。'));
-        });
-    });
-}
-
-function enableFormEditing() {
+function disableFormInputs() {
     const form = document.getElementById('projectForm');
-    Array.from(form.elements).forEach(element => {
-        element.disabled = false;
+    const inputs = form.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.setAttribute('readonly', true);
+        input.setAttribute('disabled', true);
     });
-}
-
-function disableFormEditing() {
-    const form = document.getElementById('projectForm');
-    Array.from(form.elements).forEach(element => {
-        element.disabled = true;
-    });
-}
-
-// 可以添加一个函数来显示/隐藏不同的表单部分
-function showSection(sectionName) {
-    // 隐藏所有部分
-    const sections = document.querySelectorAll('.form-section');
-    sections.forEach(section => section.style.display = 'none');
-
-    // 显示选中的部分
-    const selectedSection = document.querySelector(`.form-section[data-section="${sectionName}"]`);
-    if (selectedSection) {
-        selectedSection.style.display = 'block';
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const projectForm = document.getElementById('projectForm');
-    if (projectForm) {
-        projectForm.addEventListener('submit', handleFormSubmit);
-    }
-
-    // 移除原有的提交按钮
-    const submitButton = document.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.remove();
-    }
-});
-
-async function handleFormSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const projectData = Object.fromEntries(formData.entries());
-    
-    try {
-        if (projectData.projectId) {
-            // 更新现有项目
-            await apiRequest(API_ROUTES.PROJECT(projectData.projectId), {
-                method: 'PUT',
-                body: JSON.stringify(projectData)
-            });
-        } else {
-            // 添加新项目
-            await apiRequest(API_ROUTES.PROJECTS, {
-                method: 'POST',
-                body: JSON.stringify(projectData)
-            });
-        }
-        // 重定向到项目列表页面
-        window.location.href = 'index.html';
-    } catch (error) {
-        console.error('保存项目时出错:', error);
-        alert('保存项目时出现错误，请稍后再试。');
-    }
 }
 
 export function uploadFile(fieldName) {
-    // 创建一个隐藏的文件输入元素
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.style.display = 'none';
-    document.body.appendChild(fileInput);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-    fileInput.click();
-
-    fileInput.onchange = function() {
-        const file = fileInput.files[0];
-        if (file) {
-            // 这里应该实现文件上传到服务器的逻辑
-            // 例如使用 fetch API 或 XMLHttpRequest
-            console.log(`上传文件: ${file.name} 到字段: ${fieldName}`);
-            // 上传成功后，可以更新相应的输入框显示文件名
-            document.querySelector(`input[name="${fieldName}"]`).value = file.name;
-        }
-        document.body.removeChild(fileInput);
+        // 模拟文件上传，实际上只是将文件名存储在输入框中
+        const fileName = file.name;
+        document.querySelector(`input[name="${fieldName}"]`).value = fileName;
+        alert('文件上传成功（模拟）');
     };
+    input.click();
 }
 
 export function downloadFile(fieldName) {
-    // 这里应该实现从服务器下载文件的逻辑
-    // 例如使用 fetch API 获取文件并创建下载链接
-    console.log(`下载字段 ${fieldName} 的文件`);
-    alert('文件下载功能需要后端支持，目前仅作演示。');
+    const fileName = document.querySelector(`input[name="${fieldName}"]`).value;
+    if (!fileName) {
+        alert('没有可下载的文件');
+        return;
+    }
+
+    // 模拟文件下载
+    alert(`模拟下载文件：${fileName}`);
 }
 
 export function deleteFile(fieldName) {
-    const input = document.querySelector(`input[name="${fieldName}"]`);
-    if (input.value) {
-        if (confirm('确定要删除这个文件吗？')) {
-            // 这里应该实现从服务器删除文件的逻辑
-            console.log(`删除字段 ${fieldName} 的文件`);
-            input.value = '';
-            alert('文件已删除。');
-        }
-    } else {
-        alert('没有文件可删除。');
+    const fileName = document.querySelector(`input[name="${fieldName}"]`).value;
+    if (!fileName) {
+        alert('没有可删除的文件');
+        return;
+    }
+
+    if (confirm('确定要删除这个文件吗？')) {
+        // 模拟文件删除
+        document.querySelector(`input[name="${fieldName}"]`).value = '';
+        alert('文件已成功删除（模拟）');
     }
 }
 
@@ -213,5 +118,82 @@ export async function saveSection(sectionName) {
     } catch (error) {
         console.error(`保存 ${sectionName} 部分时出错:`, error);
         alert(`保存 ${sectionName} 部分时出现错误，请稍后再试。`);
+    }
+}
+
+// 修改保存项目数据的函数，使用 localStorage
+export function saveProjectData() {
+    const form = document.getElementById('projectForm');
+    const formData = new FormData(form);
+    const projectData = Object.fromEntries(formData.entries());
+    
+    // 检查必填字段
+    if (!projectData.projectName || !projectData.outsourcingUnitName || !projectData.projectStatus) {
+        alert('请填写必填字段');
+        return;
+    }
+
+    // 再次检查项目名称是否已存在
+    const projects = JSON.parse(localStorage.getItem('projects')) || [];
+    const existingProject = projects.find(p => p.projectName === projectData.projectName && p.projectId !== projectData.projectId);
+    if (existingProject) {
+        alert('项目名称已存在，请重新输入');
+        return;
+    }
+
+    if (!projectData.projectId) {
+        projectData.projectId = Date.now().toString();
+    }
+
+    const existingIndex = projects.findIndex(p => p.projectId === projectData.projectId);
+    if (existingIndex > -1) {
+        projects[existingIndex] = projectData;
+    } else {
+        projects.push(projectData);
+    }
+    localStorage.setItem('projects', JSON.stringify(projects));
+
+    alert('项目数据已保存到本地存储');
+    disableForm();
+    // window.location.href = 'index.html'; // 注释掉这行，不自动跳转
+}
+
+window.saveProjectData = saveProjectData;
+
+export function enableEdit() {
+    const form = document.getElementById('projectForm');
+    const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+    inputs.forEach(input => {
+        input.removeAttribute('disabled');
+        input.removeAttribute('readonly');
+    });
+    document.querySelector('.global-buttons .edit').style.display = 'none';
+    document.querySelector('.global-buttons .save').style.display = 'inline-block';
+}
+
+export function disableForm() {
+    const form = document.getElementById('projectForm');
+    const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+    inputs.forEach(input => {
+        input.setAttribute('disabled', 'disabled');
+        input.setAttribute('readonly', 'readonly');
+    });
+    document.querySelector('.global-buttons .edit').style.display = 'inline-block';
+    document.querySelector('.global-buttons .save').style.display = 'none';
+}
+
+window.enableEdit = enableEdit;
+window.disableForm = disableForm;
+
+function checkProjectNameExists() {
+    const projectName = this.value.trim();
+    if (projectName) {
+        const projects = JSON.parse(localStorage.getItem('projects')) || [];
+        const existingProject = projects.find(p => p.projectName === projectName);
+        if (existingProject) {
+            alert('项目名称已存在，请重新输入');
+            this.value = ''; // 清空输入
+            this.focus(); // 重新聚焦到输入框
+        }
     }
 }

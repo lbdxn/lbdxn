@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>委外项目管理系统</title>
+    <title>项目管理系统</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -143,7 +143,7 @@
 <body>
     <header>
         <div class="container">
-            <h1>委外项目管理系统</h1>
+            <h1>项目管理系统</h1>
         </div>
     </header>
     <div class="container">
@@ -156,7 +156,7 @@
                 <tr>
                     <th>序号</th>
                     <th>项目名称</th>
-                    <th>委外单位名称</th>
+                    <th>履约单位</th>
                     <th>工程状态</th>
                     <th>操作</th>
                 </tr>
@@ -168,8 +168,9 @@
     </div>
 
     <script>
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+
         function loadProjects() {
-            const projects = JSON.parse(localStorage.getItem('projects')) || [];
             const tableBody = document.querySelector('#projectTable tbody');
             tableBody.innerHTML = '';
 
@@ -177,47 +178,73 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${project.projectName}</td>
-                    <td>${project.outsourcingUnitName}</td>
-                    <td>${project.projectStatus}</td>
-                    <td>
-                        <button onclick="viewProject('${project.projectId}')">查看</button>
-                        <button onclick="editProject('${project.projectId}')">编辑</button>
-                        <button onclick="deleteProject('${project.projectId}')">删除</button>
+                    <td>${project.projectName || ''}</td>
+                    <td>${project.outsourcingUnitName || ''}</td>
+                    <td>${project.projectStatus || ''}</td>
+                    <td class="action-cell">
+                        <button class="view-btn" onclick="viewProject('${project.projectId}')">查看</button>
+                        <button class="delete-btn" onclick="deleteProject('${project.projectId}')">删除</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
         }
 
-        function addNewProject() {
+        function createNewProject() {
             window.location.href = 'project-form.html';
         }
 
         function viewProject(projectId) {
-            window.location.href = `project-form.html?id=${projectId}&mode=view`;
-        }
-
-        function editProject(projectId) {
-            window.location.href = `project-form.html?id=${projectId}&mode=edit`;
+            window.open(`project-form.html?id=${projectId}&mode=view`, '_blank');
         }
 
         function deleteProject(projectId) {
             if (confirm('确定要删除这个项目吗？')) {
-                let projects = JSON.parse(localStorage.getItem('projects')) || [];
                 projects = projects.filter(p => p.projectId !== projectId);
                 localStorage.setItem('projects', JSON.stringify(projects));
                 loadProjects();
             }
         }
 
-        // 添加登出函数
         function logout() {
-            // 清除登录状态（如果有的话）
             localStorage.removeItem('isLoggedIn');
-            // 跳转到登录页面
             window.location.href = 'login.html';
         }
+
+        // 处理来自 project-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'saveProject') {
+                const newProject = event.data.data;
+                
+                // 检查项目名称是否已存在
+                const existingProject = projects.find(p => p.projectName === newProject.projectName && p.projectId !== newProject.projectId);
+                if (existingProject) {
+                    alert('项目名称已存在，请重新填写');
+                    // 向 project-form.html 发送消息，通知保存失败
+                    if (event.source) {
+                        event.source.postMessage({ type: 'saveFailed', reason: 'duplicateName' }, '*');
+                    }
+                    return;
+                }
+
+                // 更新或添加项目
+                const existingIndex = projects.findIndex(p => p.projectId === newProject.projectId);
+                if (existingIndex > -1) {
+                    projects[existingIndex] = newProject;
+                } else {
+                    projects.push(newProject);
+                }
+
+                localStorage.setItem('projects', JSON.stringify(projects));
+                loadProjects();
+                
+                // 向 project-form.html 发送消息，通知保存成功
+                if (event.source) {
+                    event.source.postMessage({ type: 'saveSuccess' }, '*');
+                }
+                alert('数据已保存');
+            }
+        });
 
         // 页面加载时显示项目列表
         window.onload = loadProjects;

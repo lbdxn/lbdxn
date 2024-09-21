@@ -5,12 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>支付管理 - 委外项目管理系统</title>
     <link rel="stylesheet" href="css/project-form.css">
+    <style>
+        /* 添加与 project-form.html 一致的样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: left;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: normal;
+            color: #333;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+            background-color: transparent;
+            color: #333;
+        }
+        .nav-tab.active {
+            color: #f8fbfd;
+            font-weight: bold;
+        }
+        .nav-tab:hover {
+            color: #1e88e5;
+        }
+        .global-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            padding-right: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .global-buttons button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .global-buttons .edit {
+            background-color: #4285f4;
+            color: white;
+        }
+        .global-buttons .edit:hover {
+            background-color: #1976d2;
+        }
+        .global-buttons .save {
+            background-color: #43a047;
+            color: white;
+        }
+        .global-buttons .save:hover {
+            background-color: #388e3c;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>支付管理</h1>
+            <h1>委外项目管理系统</h1>
         </header>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+            <button class="nav-tab" onclick="location.href='project-form.html'">基本情况</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='risk-form.html'">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-form.html'">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-form.html'">成果提交</button>
+            <button class="nav-tab active">支付管理</button>
+        </div>
+        <div class="global-buttons">
+            <button type="button" class="edit" onclick="enableEdit()">修改</button>
+            <button type="submit" class="save">保存</button>
+        </div>
         <form id="paymentForm">
             <input type="hidden" name="projectId" id="projectId">
             <div class="section">
@@ -51,11 +139,6 @@
                         <textarea name="paymentDescription" class="form-input" rows="4"></textarea>
                     </div>
                 </div>
-            </div>
-            <div class="button-group">
-                <button type="button" onclick="location.href='project-form.html'">返回项目</button>
-                <button type="button" onclick="enableEdit()">修改</button>
-                <button type="submit">保存</button>
             </div>
         </form>
     </div>

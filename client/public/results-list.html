@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>渣场档案 - 项目管理系统</title>
+    <title>成果列表 - 项目管理系统</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -69,7 +69,7 @@
         }
         th, td {
             padding: 15px;
-            text-align: center; /* 将文本对齐方式改为居中 */
+            text-align: center;
             border-bottom: 1px solid #e0e0e0;
         }
         th {
@@ -131,24 +131,21 @@
         <div class="nav-tabs">
             <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
             <button class="nav-tab" onclick="location.href='project-form.html'">基本情况</button>
-            <button class="nav-tab active">渣场档案</button>
-            <button class="nav-tab" onclick="location.href='supervision-form.html'">监督检查</button>
-            <button class="nav-tab" onclick="location.href='results-form.html'">成果提交</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='supervision-list.html'">监督检查</button>
+            <button class="nav-tab active">成果提交</button>
         </div>
         <div class="global-buttons">
-            <button class="btn btn-new" onclick="createNewDump()">新建渣场</button>
+            <button class="btn btn-new" onclick="createNewResult()">新建成果</button>
         </div>
-        <table id="dumpTable">
+        <table id="resultTable">
             <thead>
                 <tr>
                     <th>序号</th>
-                    <th>渣场名称</th>
-                    <th>渣场位置</th>
-                    <th>渣场状态</th>
-                    <th>渣场类型</th>
-                    <th>堆渣进度</th>
-                    <th>渣场等级</th>
-                    <th>方案批复渣场</th>
+                    <th>成果名称</th>
+                    <th>提交日期</th>
+                    <th>成果类型</th>
+                    <th>审核状态</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -159,55 +156,48 @@
     </div>
 
     <script>
-        function loadDumps() {
-            const dumps = JSON.parse(localStorage.getItem('dumps')) || [];
-            const tableBody = document.querySelector('#dumpTable tbody');
+        function loadResults() {
+            const results = JSON.parse(localStorage.getItem('results')) || [];
+            const tableBody = document.querySelector('#resultTable tbody');
             tableBody.innerHTML = '';
 
-            dumps.forEach((dump, index) => {
-                const actualCapacity = parseFloat(dump.actualCapacity) || 0;
-                const designedCapacity = parseFloat(dump.designedCapacity) || 1;
-                const progress = Math.min((actualCapacity / designedCapacity * 100), 100).toFixed(2);
-
+            results.forEach((result, index) => {
                 const row = tableBody.insertRow();
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${dump.dumpName || ''}</td>
-                    <td>${dump.dumpLocation || ''}</td>
-                    <td>${dump.dumpStatus || ''}</td>
-                    <td>${dump.dumpType || ''}</td>
-                    <td>${progress}%</td>
-                    <td>${dump.dumpLevel || ''}</td>
-                    <td>${dump.hasLandProcedures === '是' ? '是' : '否'}</td>
+                    <td>${result.resultName || ''}</td>
+                    <td>${result.submissionDate || ''}</td>
+                    <td>${result.resultType || ''}</td>
+                    <td>${result.reviewStatus || ''}</td>
                     <td class="action-cell">
-                        <button class="btn btn-edit" onclick="viewDump('${dump.dumpId}')">查看</button>
-                        <button class="btn btn-delete" onclick="deleteDump('${dump.dumpId}')">删除</button>
+                        <button class="btn btn-edit" onclick="viewResult('${result.resultId}')">查看</button>
+                        <button class="btn btn-delete" onclick="deleteResult('${result.resultId}')">删除</button>
                     </td>
                 `;
             });
         }
 
-        function createNewDump() {
-            localStorage.setItem('isNewDump', 'true');
-            location.href = 'dump-detail.html';
+        function createNewResult() {
+            localStorage.setItem('isNewResult', 'true');
+            location.href = 'results-form.html';
         }
 
-        function viewDump(dumpId) {
-            localStorage.setItem('isNewDump', 'false');
-            location.href = `dump-detail.html?id=${dumpId}`;
+        function viewResult(resultId) {
+            localStorage.setItem('isNewResult', 'false');
+            location.href = `results-form.html?id=${resultId}`;
         }
 
-        function deleteDump(dumpId) {
-            if (confirm('确定要删除这个渣场记录吗？')) {
-                let dumps = JSON.parse(localStorage.getItem('dumps')) || [];
-                dumps = dumps.filter(dump => dump.dumpId !== dumpId);
-                localStorage.setItem('dumps', JSON.stringify(dumps));
-                loadDumps();
+        function deleteResult(resultId) {
+            if (confirm('确定要删除这个成果记录吗？')) {
+                let results = JSON.parse(localStorage.getItem('results')) || [];
+                results = results.filter(result => result.resultId !== resultId);
+                localStorage.setItem('results', JSON.stringify(results));
+                loadResults();
             }
         }
 
-        // 页面加载时加载渣场数据
-        window.addEventListener('load', loadDumps);
+        // 页面加载时加载成果数据
+        window.addEventListener('load', loadResults);
     </script>
 </body>
 </html>

@@ -3,31 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>监督检查 - 委外项目管理系统</title>
+    <title>监督检查 - 项目管理系统</title>
     <link rel="stylesheet" href="css/project-form.css">
+    <style>
+        /* 保留原有样式 */
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .header-actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-edit {
+            background-color: #ffa000;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+        .btn-save {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+        .btn-nav {
+            background-color: #1e88e5;
+            color: white;
+        }
+        .btn-nav:hover {
+            background-color: #1565c0;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>监督检查</h1>
+            <h1>项目管理系统</h1>
         </header>
+        <div class="header-actions">
+            <button type="button" class="btn btn-edit" onclick="editForm()" style="display:none;">修改</button>
+            <button type="button" class="btn btn-save" onclick="saveSupervisionData()">保存</button>
+            <button class="btn btn-nav" onclick="location.href='supervision-list.html'">返回上一页</button>
+        </div>
         <form id="supervisionForm">
-            <input type="hidden" name="projectId" id="projectId">
             <div class="section">
                 <h2>检查信息</h2>
                 <div class="form-row">
                     <div class="form-field">
-                        <span class="form-label required">检查日期</span>
+                        <label class="form-label required">检查日期</label>
                         <input type="date" name="inspectionDate" class="form-input" required>
                     </div>
                     <div class="form-field">
-                        <span class="form-label required">检查人员</span>
+                        <label class="form-label required">检查人员</label>
                         <input type="text" name="inspector" class="form-input" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <span class="form-label">检查类型</span>
+                        <label class="form-label">检查类型</label>
                         <select name="inspectionType" class="form-input">
                             <option value="">请选择</option>
                             <option value="常规检查">常规检查</option>
@@ -36,7 +78,7 @@
                         </select>
                     </div>
                     <div class="form-field">
-                        <span class="form-label">检查结果</span>
+                        <label class="form-label">检查结果</label>
                         <select name="inspectionResult" class="form-input">
                             <option value="">请选择</option>
                             <option value="合格">合格</option>
@@ -47,60 +89,198 @@
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <span class="form-label">检查内容</span>
+                        <label class="form-label">检查内容</label>
                         <textarea name="inspectionContent" class="form-input" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <span class="form-label">整改建议</span>
+                        <label class="form-label">存在问题</label>
+                        <textarea name="existingProblems" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <label class="form-label">整改建议</label>
                         <textarea name="improvementSuggestions" class="form-input" rows="4"></textarea>
                     </div>
                 </div>
             </div>
-            <div class="button-group">
-                <button type="button" onclick="location.href='project-form.html'">返回项目</button>
-                <button type="button" onclick="enableEdit()">修改</button>
-                <button type="submit">保存</button>
+            <div class="section">
+                <h2>检查图库</h2>
+                <div>
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;" multiple>
+                    <button type="button" class="btn btn-function" onclick="triggerImageUpload()">上传图片</button>
+                    <button type="button" class="btn btn-function" onclick="deleteSelectedImages()">删除选中</button>
+                </div>
+                <div class="image-gallery">
+                    <table id="imageList">
+                        <tr>
+                            <th>选中</th>
+                            <th>文件名</th>
+                            <th>上传时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </form>
     </div>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const projectId = urlParams.get('id');
-        document.getElementById('projectId').value = projectId;
-
-        function loadSupervisionData() {
-            const supervisionData = JSON.parse(localStorage.getItem(`supervision_${projectId}`)) || {};
-            Object.keys(supervisionData).forEach(key => {
-                const input = document.querySelector(`[name="${key}"]`);
-                if (input) {
-                    input.value = supervisionData[key];
-                }
-            });
-            disableForm();
-        }
+        let isNewSupervision = localStorage.getItem('isNewSupervision') === 'true';
 
         function disableForm() {
-            const inputs = document.querySelectorAll('#supervisionForm input, #supervisionForm select, #supervisionForm textarea');
-            inputs.forEach(input => input.disabled = true);
+            const form = document.getElementById('supervisionForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+            document.querySelector('.btn-edit').style.display = 'inline-block';
+            document.querySelector('.btn-save').style.display = 'none';
         }
 
-        function enableEdit() {
-            const inputs = document.querySelectorAll('#supervisionForm input, #supervisionForm select, #supervisionForm textarea');
-            inputs.forEach(input => input.disabled = false);
+        function editForm() {
+            const form = document.getElementById('supervisionForm');
+            const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+            document.querySelector('.btn-edit').style.display = 'none';
+            document.querySelector('.btn-save').style.display = 'inline-block';
         }
 
-        document.getElementById('supervisionForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
+        function saveSupervisionData() {
+            const formData = new FormData(document.getElementById('supervisionForm'));
             const supervisionData = Object.fromEntries(formData.entries());
-            localStorage.setItem(`supervision_${projectId}`, JSON.stringify(supervisionData));
-            alert('保存成功');
+
+            // 添加这行代码来保存 supervisionId
+            const urlParams = new URLSearchParams(window.location.search);
+            const supervisionId = urlParams.get('id');
+            if (supervisionId) {
+                supervisionData.supervisionId = supervisionId;
+            }
+
+            // 检查必填项
+            if (!supervisionData.inspectionDate || !supervisionData.inspector) {
+                alert('检查日期和检查人员为必填项，请填写完整。');
+                return;
+            }
+
+            let supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
+
+            if (isNewSupervision) {
+                supervisionData.supervisionId = Date.now().toString();
+                supervisions.push(supervisionData);
+            } else {
+                const editIndex = supervisions.findIndex(s => s.supervisionId === supervisionData.supervisionId);
+                if (editIndex !== -1) {
+                    supervisions[editIndex] = supervisionData;
+                } else {
+                    alert('未找到要编辑的检查数据');
+                    return;
+                }
+            }
+
+            localStorage.setItem('supervisions', JSON.stringify(supervisions));
+            localStorage.removeItem('isNewSupervision');
             disableForm();
+            alert('保存成功');
+            window.location.href = 'supervision-list.html';
+        }
+
+        function triggerImageUpload() {
+            document.getElementById('imageUpload').click();
+        }
+
+        function deleteSelectedImages() {
+            const checkboxes = document.querySelectorAll('#imageList input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                alert('请选择要删除的图片');
+                return;
+            }
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.closest('tr').remove();
+            });
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const imageList = document.getElementById('imageList');
+            
+            for (let file of files) {
+                // 在表头后插入新行
+                const newRow = imageList.insertRow(1);
+                const cell1 = newRow.insertCell(0);
+                const cell2 = newRow.insertCell(1);
+                const cell3 = newRow.insertCell(2);
+                const cell4 = newRow.insertCell(3);
+                
+                cell1.innerHTML = '<input type="checkbox">';
+                cell2.textContent = file.name;
+                cell3.textContent = new Date().toLocaleString();
+                cell4.innerHTML = `
+                    <button onclick="previewImage('${URL.createObjectURL(file)}', event)">预览</button>
+                    <button onclick="downloadImage('${file.name}', '${URL.createObjectURL(file)}', event)">下载</button>
+                `;
+            }
         });
 
-        window.onload = loadSupervisionData;
+        function previewImage(url, event) {
+            event.preventDefault(); // 阻止默认行为
+            const previewWindow = window.open(url, '_blank', 'width=800,height=600');
+            previewWindow.onload = function() {
+                const closeButton = previewWindow.document.createElement('button');
+                closeButton.textContent = '关闭';
+                closeButton.style.position = 'fixed';
+                closeButton.style.top = '10px';
+                closeButton.style.right = '10px';
+                closeButton.onclick = function() {
+                    previewWindow.close();
+                };
+                previewWindow.document.body.appendChild(closeButton);
+            };
+        }
+
+        function downloadImage(fileName, url, event) {
+            event.preventDefault(); // 阻止默认行为
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const supervisionId = urlParams.get('id');
+
+            if (!isNewSupervision && supervisionId) {
+                loadSupervisionData(supervisionId);
+                disableForm();
+            } else {
+                document.querySelector('.btn-edit').style.display = 'none';
+                document.querySelector('.btn-save').style.display = 'inline-block';
+            }
+        });
+
+        function loadSupervisionData(supervisionId) {
+            const supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
+            const supervision = supervisions.find(s => s.supervisionId === supervisionId);
+            
+            if (supervision) {
+                const form = document.getElementById('supervisionForm');
+                for (let key in supervision) {
+                    const input = form.elements[key];
+                    if (input) {
+                        input.value = supervision[key];
+                    }
+                }
+            } else {
+                alert('未找到检查数据');
+            }
+        }
     </script>
 </body>
 </html>

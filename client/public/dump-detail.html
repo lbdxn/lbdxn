@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>渣场档案 - 委外项目管理系统</title>
+    <title>监督检查 - 项目管理系统</title>
     <link rel="stylesheet" href="css/project-form.css">
     <style>
         body {
@@ -130,14 +130,28 @@
         .image-gallery table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed; /* 添加这一行以确保列宽设置生效 */
         }
         .image-gallery th, .image-gallery td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            text-align: center; /* 将文本对齐方式改为居中 */
+            vertical-align: middle; /* 垂直居中 */
+            overflow: hidden; /* 添加这一行以处理内容溢出 */
+            text-overflow: ellipsis; /* 添加这一行以在内容溢出时显示省略号 */
+            white-space: nowrap; /* 添加这一行以防止内容换行 */
         }
         .image-gallery th {
             background-color: #f2f2f2;
+        }
+        .image-gallery th:nth-child(1), .image-gallery td:nth-child(1) { width: 10%; }
+        .image-gallery th:nth-child(2), .image-gallery td:nth-child(2) { width: 30%; }
+        .image-gallery th:nth-child(3), .image-gallery td:nth-child(3) { width: 30%; }
+        .image-gallery th:nth-child(4), .image-gallery td:nth-child(4) { width: 20%; }
+        .image-gallery th:nth-child(5), .image-gallery td:nth-child(5) { width: 10%; font-size: inherit; text-align: center; }
+        .image-gallery select {
+            font-size: inherit;
+            width: 100%;
         }
         .image-actions {
             white-space: nowrap;
@@ -151,250 +165,129 @@
             color: red;
             margin-left: 4px;
         }
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .header-actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-edit {
+            background-color: #ffa000;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+
+        .btn-save {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            height: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: black;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>渣场档案</h1>
+            <h1>项目管理系统</h1>
         </header>
-        <div style="text-align: right; margin-bottom: 20px;">
-            <button class="btn btn-nav" onclick="location.href='dump-list.html'">返回上一页</button>
+        <div class="header-actions">
+            <button type="button" class="btn btn-edit" onclick="editForm()" style="display:none;">修改</button>
+            <button type="button" class="btn btn-save" onclick="saveSupervisionData()">保存</button>
+            <button class="btn btn-nav" onclick="location.href='supervision-list.html'">返回上一页</button>
         </div>
-        <form id="dumpForm">
+        <form id="supervisionForm">
             <div class="section">
                 <h2>基本信息</h2>
                 <div class="form-row">
                     <div class="form-field">
-                        <label class="form-label required">渣场名称</label>
-                        <input type="text" name="dumpName" class="form-input" required>
+                        <label class="form-label required">检查日期</label>
+                        <input type="date" name="inspectionDate" class="form-input" required>
                     </div>
                     <div class="form-field">
-                        <label class="form-label">渣场类型</label>
-                        <input type="text" name="dumpType" class="form-input">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label required">所在位置</label>
-                        <input type="text" name="dumpLocation" class="form-input" required>
-                    </div>
-                    <div class="form-field">
-                        <label class="form-label">经纬度</label>
-                        <input type="text" name="coordinates" class="form-input">
+                        <label class="form-label required">检查人员</label>
+                        <input type="text" name="inspector" class="form-input" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <label class="form-label">所属标段</label>
-                        <input type="text" name="section" class="form-input">
-                    </div>
-                    <div class="form-field">
-                        <label class="form-label">使用维护单位</label>
-                        <input type="text" name="unit" class="form-input">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label required">渣场状态</label>
-                        <select name="dumpStatus" class="form-input" required>
+                        <label class="form-label">检查类型</label>
+                        <select name="inspectionType" class="form-input">
                             <option value="">请选择</option>
-                            <option value="未使用">未使用</option>
-                            <option value="使用中">使用中</option>
-                            <option value="堆渣完毕">堆渣完毕</option>
-                            <option value="已移交">已移交</option>
+                            <option value="日常检查">日常检查</option>
+                            <option value="专项检查">专项检查</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">检查结果</label>
+                        <select name="inspectionResult" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="合格">合格</option>
+                            <option value="不合格">不合格</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <label class="form-label">设计渣场</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="isDesigned" value="是"> 是          <input type="radio" name="isDesigned" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field">
-                         <label class="form-label">涉水渣场</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="isDesigned" value="是"> 是          <input type="radio" name="isDesigned" value="否"> 否</label>
-                        </div>
+                        <label class="form-label">检查内容</label>
+                        <textarea name="inspectionContent" class="form-input" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <label class="form-label">设计堆渣量</label>
-                        <input type="text" name="designedCapacity" class="form-input">
-                    </div>
-                    <div class="form-field">
-                        <label class="form-label">设计堆渣高度</label>
-                        <input type="text" name="designedHeight" class="form-input">
+                        <label class="form-label">存在问题</label>
+                        <textarea name="existingIssues" class="form-input" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-field">
-                        <label class="form-label">实际堆渣量</label>
-                        <input type="text" name="actualCapacity" class="form-input">
+                        <label class="form-label">整改建议</label>
+                        <textarea name="rectificationSuggestions" class="form-input" rows="4"></textarea>
                     </div>
-                    <div class="form-field">
-                        <label class="form-label">实际堆渣高度</label>
-                        <input type="text" name="actualHeight" class="form-input">
-                    </div>
-                </div>
-            </div>
-            <div class="section">
-                <h2>渣场隐患排查</h2>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">渣场用地手续是否齐全</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="hasLandProcedures" value="是"> 是</label>
-                            <label><input type="radio" name="hasLandProcedures" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="landProceduresNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="landProceduresNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">是否编制稳评报告</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="hasStabilityReport" value="是"> 是</label>
-                            <label><input type="radio" name="hasStabilityReport" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="stabilityReportNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="stabilityReportNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">是否有地质灾害隐患</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="hasGeologicalHazard" value="是"> 是</label>
-                            <label><input type="radio" name="hasGeologicalHazard" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="geologicalHazardNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="geologicalHazardNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">是否在安全距离内有居民</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="hasResidentsNearby" value="是"> 是</label>
-                            <label><input type="radio" name="hasResidentsNearby" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="residentsNearbyNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="residentsNearbyNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">是否侵占河湖水域岸线</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="occupiesWaterfront" value="是"> 是</label>
-                            <label><input type="radio" name="occupiesWaterfront" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="occupiesWaterfrontNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="occupiesWaterfrontNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">是否纳入变更管理</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="includedInChangeManagement" value="是"> 是</label>
-                            <label><input type="radio" name="includedInChangeManagement" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="changeManagementNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="changeManagementNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">临时措施是否满足要求</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="temporaryMeasuresMeetRequirements" value="是"> 是</label>
-                            <label><input type="radio" name="temporaryMeasuresMeetRequirements" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="temporaryMeasuresNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="temporaryMeasuresNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">挡渣工程是否满足要求</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="retainingWorksMeetRequirements" value="是"> 是</label>
-                            <label><input type="radio" name="retainingWorksMeetRequirements" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="retainingWorksNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="retainingWorksNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">防洪排导工程是否满足要求</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="floodControlMeetRequirements" value="是"> 是</label>
-                            <label><input type="radio" name="floodControlMeetRequirements" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="floodControlNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="floodControlNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">边坡防护工程是否满足要求</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="slopeProtectionMeetRequirements" value="是"> 是</label>
-                            <label><input type="radio" name="slopeProtectionMeetRequirements" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="slopeProtectionNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="slopeProtectionNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-                <div class="form-row-special">
-                    <div class="form-field-label">
-                        <label class="form-label">植被恢复工程是否满足要求</label>
-                        <div class="radio-group">
-                            <label><input type="radio" name="vegetationRestorationMeetRequirements" value="是"> 是</label>
-                            <label><input type="radio" name="vegetationRestorationMeetRequirements" value="否"> 否</label>
-                        </div>
-                    </div>
-                    <div class="form-field-input">
-                        <textarea name="vegetationRestorationNote" class="form-input-underline" placeholder=" " rows="1"></textarea>
-                        <label for="vegetationRestorationNote" class="form-label-float">情况说明</label>
-                    </div>
-                </div>
-
-                <div class="section-buttons">
-                    <button type="button" class="btn btn-edit" onclick="editForm()" style="display:none;">修改</button>
-                    <button type="submit" class="btn btn-save">保存</button>
                 </div>
             </div>
 
             <div class="section">
-                <h2>渣场图库</h2>
+                <h2>检查图库</h2>
                 <div>
                     <input type="file" id="imageUpload" accept="image/*" style="display: none;" multiple>
                     <button type="button" class="btn btn-function" onclick="triggerImageUpload(event)">上传图片</button>
@@ -403,10 +296,11 @@
                 <div class="image-gallery">
                     <table id="imageList">
                         <tr>
-                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(event)"></th>
+                            <th>选中</th>
                             <th>文件名</th>
                             <th>上传时间</th>
                             <th>操作</th>
+                            <th>图片类型</th>
                         </tr>
                     </table>
                 </div>
@@ -417,164 +311,88 @@
     <script>
         let imageFiles = [];
 
-        document.getElementById('imageUpload').addEventListener('change', function(event) {
-            const files = event.target.files;
-            for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newImage = {
-                        name: file.name,
-                        uploadTime: new Date().toLocaleString(),
-                        data: e.target.result
-                    };
-                    imageFiles.push(newImage);
-                    updateImageList();
-                    saveImagesToLocalStorage(); // 保存图片到 localStorage
-                };
-                reader.readAsDataURL(file);
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('id');
+            const isNewDump = !editId;
+
+            localStorage.setItem('isNewDump', isNewDump);
+
+            if (!isNewDump) {
+                // 编辑模式
+                loadDumpData(editId);
+                disableForm();
+                document.querySelector('.btn-edit').style.display = 'inline-block';
+                document.querySelector('.btn-save').style.display = 'none';
+            } else {
+                // 新建模式
+                document.querySelector('.btn-edit').style.display = 'none';
+                document.querySelector('.btn-save').style.display = 'inline-block';
+            }
+
+            // 为渣场名称输入框添加事件监听器
+            const dumpNameInput = document.querySelector('input[name="dumpName"]');
+            dumpNameInput.addEventListener('change', checkDumpNameExists);
+
+            // 为其他输入框添加事件监听器
+            const form = document.getElementById('dumpForm');
+            form.addEventListener('input', function(event) {
+                if (event.target.name !== 'dumpName' && dumpNameInput.value.trim() !== '') {
+                    checkDumpNameExists.call(dumpNameInput);
+                }
+            });
+
+            // 为实际堆渣量和设计堆渣量输入框添加事件监听器
+            const actualCapacityInput = document.querySelector('input[name="actualCapacity"]');
+            const designedCapacityInput = document.querySelector('input[name="designedCapacity"]');
+
+            actualCapacityInput.addEventListener('input', updateDumpProgress);
+            designedCapacityInput.addEventListener('input', updateDumpProgress);
+
+            // 如果是编辑模式，立即更新进度条
+            if (!isNewDump) {
+                updateDumpProgress();
             }
         });
 
-        function updateImageList() {
-            const table = document.getElementById('imageList');
-            // 清除旧的行，保留表头
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
-            }
-            // 添加新的行
-            imageFiles.forEach((file, index) => {
-                const row = table.insertRow();
-                const checkCell = row.insertCell(0);
-                const nameCell = row.insertCell(1);
-                const timeCell = row.insertCell(2);
-                const actionCell = row.insertCell(3);
-
-                checkCell.innerHTML = `<input type="checkbox" name="imageSelect" value="${index}">`;
-                nameCell.textContent = file.name;
-                timeCell.textContent = file.uploadTime;
-                actionCell.innerHTML = `
-                    <button class="btn btn-function" onclick="previewImage(${index}, event)">预览</button>
-                    <button class="btn btn-function" onclick="downloadImage(${index}, event)">下载</button>
-                `;
-            });
-        }
-
-        function saveImagesToLocalStorage() {
-            const dumpId = new URLSearchParams(window.location.search).get('id') || Date.now().toString();
-            localStorage.setItem(`dumpImages_${dumpId}`, JSON.stringify(imageFiles));
-        }
-
-        function loadImagesFromLocalStorage() {
-            const dumpId = new URLSearchParams(window.location.search).get('id');
-            if (dumpId) {
-                const savedImages = localStorage.getItem(`dumpImages_${dumpId}`);
-                if (savedImages) {
-                    imageFiles = JSON.parse(savedImages);
-                    updateImageList();
+        function checkDumpNameExists() {
+            const dumpName = this.value.trim();
+            if (dumpName) {
+                const dumps = JSON.parse(localStorage.getItem('dumps')) || [];
+                const existingDump = dumps.find(d => d.dumpName === dumpName && d.dumpId !== document.querySelector('input[name="dumpId"]')?.value);
+                if (existingDump) {
+                    alert('渣场名称已存在，请重新输入');
+                    this.value = ''; // 清空输入
+                    this.focus(); // 重新聚焦到输入框
                 }
             }
         }
-
-        function toggleSelectAll(event) {
-            event.preventDefault(); // 阻止事件冒泡
-            const checkboxes = document.getElementsByName('imageSelect');
-            const selectAllCheckbox = document.getElementById('selectAll');
-            checkboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
-        }
-
-        function deleteSelectedImages(event) {
-            event.preventDefault(); // 阻止事件冒泡
-            const checkboxes = document.getElementsByName('imageSelect');
-            const selectedIndexes = Array.from(checkboxes)
-                .filter(checkbox => checkbox.checked)
-                .map(checkbox => parseInt(checkbox.value))
-                .sort((a, b) => b - a);
-
-            if (selectedIndexes.length === 0) {
-                alert('请选择要删除的图片');
-                return;
-            }
-
-            if (confirm(`确定要删除选中的 ${selectedIndexes.length} 张图片吗？`)) {
-                selectedIndexes.forEach(index => {
-                    imageFiles.splice(index, 1);
-                });
-                updateImageList();
-                saveImagesToLocalStorage(); // 保存更新后的图片数据
-            }
-        }
-
-        function previewImage(index, event) {
-            event.preventDefault(); // 阻止事件冒泡
-            const file = imageFiles[index];
-            
-            // 创建模态框
-            const modal = document.createElement('div');
-            modal.style.position = 'fixed';
-            modal.style.top = '0';
-            modal.style.left = '0';
-            modal.style.width = '100%';
-            modal.style.height = '100%';
-            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            modal.style.display = 'flex';
-            modal.style.justifyContent = 'center';
-            modal.style.alignItems = 'center';
-            modal.style.zIndex = '1000';
-
-            // 创建图片元素
-            const img = document.createElement('img');
-            img.src = file.data;
-            img.style.maxWidth = '90%';
-            img.style.maxHeight = '90%';
-            img.style.objectFit = 'contain';
-            img.style.border = '5px solid white';
-
-            modal.appendChild(img);
-
-            // 创建关闭按钮
-            const closeButton = document.createElement('button');
-            closeButton.textContent = '关闭';
-            closeButton.style.position = 'absolute';
-            closeButton.style.top = '20px';
-            closeButton.style.right = '20px';
-            closeButton.style.padding = '10px 20px';
-            closeButton.style.backgroundColor = '#ff0000';
-            closeButton.style.color = 'white';
-            closeButton.style.border = 'none';
-            closeButton.style.cursor = 'pointer';
-
-            closeButton.onclick = function() {
-                document.body.removeChild(modal);
-            };
-
-            modal.appendChild(closeButton);
-            document.body.appendChild(modal);
-        }
-
-        function downloadImage(index, event) {
-            event.preventDefault(); // 阻止事件冒泡
-            const file = imageFiles[index];
-            const link = document.createElement('a');
-            link.href = file.data;
-            link.download = file.name;
-            link.click();
-        }
-
-        // 修改表单提交处理
-        document.getElementById('dumpForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            saveDumpData();
-        });
 
         function saveDumpData() {
             // 收集表单数据
             const formData = new FormData(document.getElementById('dumpForm'));
             const dumpData = Object.fromEntries(formData.entries());
 
+            // 检查必填项
+            if (!dumpData.dumpName || !dumpData.dumpLocation || !dumpData.dumpStatus) {
+                alert('渣场名称、渣场位置和渣场状态为必填项，请填写完整。');
+                return;
+            }
+
             // 获取现有的渣场数据
             let dumps = JSON.parse(localStorage.getItem('dumps')) || [];
 
             const isNewDump = localStorage.getItem('isNewDump') === 'true';
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('id');
+
+            // 添加图片数据
+            dumpData.images = imageFiles.map(file => ({
+                name: file.name,
+                uploadTime: file.uploadTime,
+                dataUrl: file.dataUrl,
+                type: file.type
+            }));
 
             if (isNewDump) {
                 // 新建渣场
@@ -582,9 +400,14 @@
                 dumps.push(dumpData);
             } else {
                 // 更新现有渣场
-                const editIndex = dumps.findIndex(dump => dump.dumpId === dumpData.dumpId);
+                const editIndex = dumps.findIndex(dump => dump.dumpId === editId);
                 if (editIndex !== -1) {
+                    // 保留原有的 dumpId
+                    dumpData.dumpId = editId;
                     dumps[editIndex] = dumpData;
+                } else {
+                    alert('未找到要编辑的渣场数据');
+                    return;
                 }
             }
 
@@ -599,11 +422,14 @@
 
             // 显示保存成功消息
             alert('保存成功');
+
+            // 跳转回列表页面
+            window.location.href = 'dump-list.html';
         }
 
         function disableForm() {
             const form = document.getElementById('dumpForm');
-            const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
+            const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
             inputs.forEach(input => {
                 input.disabled = true;
             });
@@ -613,36 +439,13 @@
 
         function editForm() {
             const form = document.getElementById('dumpForm');
-            const inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
+            const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
             inputs.forEach(input => {
                 input.disabled = false;
             });
             document.querySelector('.btn-edit').style.display = 'none';
             document.querySelector('.btn-save').style.display = 'inline-block';
         }
-
-        function triggerImageUpload(event) {
-            event.preventDefault(); // 阻止事件冒泡
-            document.getElementById('imageUpload').click();
-        }
-
-        // 页面加载时的处理
-        window.addEventListener('load', function() {
-            loadImagesFromLocalStorage();
-            const urlParams = new URLSearchParams(window.location.search);
-            const editId = urlParams.get('id');
-            const isNewDump = localStorage.getItem('isNewDump') === 'true';
-
-            if (!isNewDump && editId) {
-                // 编辑模式
-                loadDumpData(editId);
-                disableForm();
-            } else {
-                // 新建模式
-                document.querySelector('.btn-edit').style.display = 'none';
-                document.querySelector('.btn-save').style.display = 'inline-block';
-            }
-        });
 
         function loadDumpData(dumpId) {
             const dumps = JSON.parse(localStorage.getItem('dumps')) || [];
@@ -653,12 +456,46 @@
                     const element = document.querySelector(`[name="${key}"]`);
                     if (element) {
                         if (element.type === 'radio') {
-                            document.querySelector(`[name="${key}"][value="${dumpData[key]}"]`).checked = true;
+                            const radio = document.querySelector(`[name="${key}"][value="${dumpData[key]}"]`);
+                            if (radio) {
+                                radio.checked = true;
+                            }
                         } else {
                             element.value = dumpData[key];
                         }
                     }
                 });
+                // 设置隐藏的 dumpId 字段
+                const dumpIdField = document.createElement('input');
+                dumpIdField.type = 'hidden';
+                dumpIdField.name = 'dumpId';
+                dumpIdField.value = dumpId;
+                document.getElementById('dumpForm').appendChild(dumpIdField);
+
+                // 加载图片数据
+                if (dumpData.images && dumpData.images.length > 0) {
+                    dumpData.images.forEach(image => {
+                        const row = document.createElement('tr');
+                        row.setAttribute('data-url', image.dataUrl);
+                        row.innerHTML = `
+                            <td><input type="checkbox"></td>
+                            <td>${image.name}</td>
+                            <td>${image.uploadTime}</td>
+                            <td class="image-actions">
+                                <button onclick="previewImage('${image.dataUrl}', event)">预览</button>
+                                <button onclick="downloadImage('${image.name}', '${image.dataUrl}', event)">下载</button>
+                            </td>
+                            <td>
+                                <span onclick="showImageTypeSelect(this)">${image.type}</span>
+                            </td>
+                        `;
+                        document.getElementById('imageList').appendChild(row);
+                    });
+                    updateImageFiles();
+                }
+
+                // 更新堆渣进度
+                updateDumpProgress();
             }
         }
 
@@ -681,6 +518,206 @@
             // 初始化时触发一次以设置正确的高度和标签可见性
             textarea.dispatchEvent(new Event('input'));
         });
+
+        function triggerImageUpload(event) {
+            event.preventDefault();
+            document.getElementById('imageUpload').click();
+        }
+
+        function deleteSelectedImages(event) {
+            event.preventDefault();
+            const checkboxes = document.querySelectorAll('#imageList input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== 'selectAll') {
+                    const row = checkbox.closest('tr');
+                    row.remove();
+                }
+            });
+            updateImageFiles();
+        }
+
+        function toggleSelectAll(event) {
+            const checkboxes = document.querySelectorAll('#imageList input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== 'selectAll') {
+                    checkbox.checked = event.target.checked;
+                }
+            });
+        }
+
+        function updateImageFiles() {
+            imageFiles = Array.from(document.querySelectorAll('#imageList tr')).slice(1).map(row => {
+                return {
+                    name: row.cells[1].textContent,
+                    uploadTime: row.cells[2].textContent,
+                    dataUrl: row.getAttribute('data-url'),
+                    type: row.cells[4].querySelector('span')?.textContent || row.cells[4].querySelector('select')?.value
+                };
+            });
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const row = document.createElement('tr');
+                    row.setAttribute('data-url', e.target.result);
+                    row.innerHTML = `
+                        <td><input type="checkbox"></td>
+                        <td>${file.name}</td>
+                        <td>${new Date().toLocaleString()}</td>
+                        <td class="image-actions">
+                            <button onclick="previewImage('${e.target.result}', event)">预览</button>
+                            <button onclick="downloadImage('${file.name}', '${e.target.result}', event)">下载</button>
+                        </td>
+                        <td>
+                            <select onchange="updateImageType(this)">
+                                <option value="">请选择</option>
+                                <option value="航拍全景">航拍全景</option>
+                                <option value="渣场局部">渣场局部</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    `;
+                    const table = document.getElementById('imageList');
+                    const firstDataRow = table.rows[1]; // 获取标题行之后的第一行
+                    if (firstDataRow) {
+                        table.insertBefore(row, firstDataRow); // 在第一行数据之前插入新行
+                    } else {
+                        table.appendChild(row); // 如果没有数据行，则直接添加到表格末尾
+                    }
+                    updateImageFiles();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function updateImageType(select) {
+            const row = select.closest('tr');
+            const imageFile = imageFiles.find(file => file.name === row.cells[1].textContent);
+            if (imageFile) {
+                imageFile.type = select.value;
+                // 更新显示，隐藏下拉菜单，只显示选中的文字
+                const selectedText = select.options[select.selectedIndex].text;
+                select.style.display = 'none';
+                const textSpan = document.createElement('span');
+                textSpan.textContent = selectedText;
+                textSpan.style.cursor = 'pointer';
+                textSpan.onclick = function() {
+                    textSpan.style.display = 'none';
+                    select.style.display = '';
+                };
+                select.parentNode.insertBefore(textSpan, select);
+            }
+        }
+
+        function showImageTypeSelect(span) {
+            span.style.display = 'none';
+            const td = span.closest('td');
+            const select = td.querySelector('select');
+            if (select) {
+                select.style.display = '';
+            } else {
+                const newSelect = document.createElement('select');
+                newSelect.innerHTML = `
+                    <option value="">请选择</option>
+                    <option value="航拍全景">航拍全景</option>
+                    <option value="渣场局部">渣场局部</option>
+                    <option value="其他">其他</option>
+                `;
+                newSelect.value = span.textContent;
+                newSelect.onchange = function() {
+                    updateImageType(this);
+                };
+                td.appendChild(newSelect);
+            }
+        }
+
+        function previewImage(src, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+
+            const imgContainer = document.createElement('div');
+            imgContainer.style.position = 'relative';
+            imgContainer.style.maxWidth = '90%';
+            imgContainer.style.maxHeight = '90%';
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.style.display = 'block';
+            img.style.borderRadius = '5px';
+
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '关闭';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.padding = '5px 10px';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+            closeButton.style.border = 'none';
+            closeButton.style.borderRadius = '5px';
+            closeButton.style.cursor = 'pointer';
+
+            closeButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.body.removeChild(modal);
+            });
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(closeButton);
+            modal.appendChild(imgContainer);
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+
+            imgContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        function downloadImage(fileName, dataUrl, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function updateDumpProgress() {
+            const actualCapacity = parseFloat(document.querySelector('input[name="actualCapacity"]').value) || 0;
+            const designedCapacity = parseFloat(document.querySelector('input[name="designedCapacity"]').value) || 1;
+            
+            const progress = actualCapacity / designedCapacity;
+            const progressPercentage = Math.min(progress * 100, 100).toFixed(2);
+            
+            const progressBar = document.getElementById('dumpProgress');
+            const progressText = document.getElementById('dumpProgressText');
+            
+            progressBar.style.width = `${progressPercentage}%`;
+            progressBar.style.backgroundColor = progress > 1 ? 'red' : 'green';
+            progressText.textContent = `${progressPercentage}%`;
+        }
     </script>
 </body>
 </html>
