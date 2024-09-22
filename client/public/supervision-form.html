@@ -3,282 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>监督检查 - 项目管理系统</title>
-    <link rel="stylesheet" href="css/project-form.css">
+    <title>项目监督 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* 保留原有样式 */
-        .header-actions {
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: #1e88e5;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+        h1 {
+            margin: 0;
+            white-space: nowrap;
+        }
+        h2 {
+            margin-bottom: 1rem;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 15px;
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .form-row.three-column .form-field {
+            flex: 0 0 32%;
+        }
+        .form-label {
+            display: block;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 4px 4px;
+        }
+        .required::after {
+            content: "*";
+            color: #e53935;
+            margin-left: 5px;
+        }
+        button {
+            background-color: #1e88e5;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1565c0;
+        }
+        .section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .global-buttons {
             display: flex;
             justify-content: flex-end;
             margin-bottom: 20px;
+            padding-right: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .header-actions button {
-            margin-left: 10px;
+        .global-buttons button {
             padding: 8px 16px;
+            margin-left: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s, color 0.3s;
         }
-        .btn-edit {
-            background-color: #ffa000;
+        .global-buttons .edit {
+            background-color: #5fe8c1;
             color: white;
         }
-        .btn-edit:hover {
-            background-color: #ff8f00;
+        .global-buttons .edit:hover {
+            background-color: #1976d2;
         }
-        .btn-save {
-            background-color: #4caf50;
+        .global-buttons .save {
+            background-color: #43a047;
             color: white;
         }
-        .btn-save:hover {
-            background-color: #45a049;
+        .global-buttons .save:hover {
+            background-color: #388e3c;
         }
-        .btn-nav {
-            background-color: #1e88e5;
-            color: white;
+        .global-buttons .back {
+            background-color: #f0f0f0;
+            color: #333;
         }
-        .btn-nav:hover {
-            background-color: #1565c0;
+        .global-buttons .back:hover {
+            background-color: #e0e0e0;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            color: #1e88e5;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>项目管理系统</h1>
+            <h1>行政监督检查</h1>
         </header>
-        <div class="header-actions">
-            <button type="button" class="btn btn-edit" onclick="editForm()" style="display:none;">修改</button>
-            <button type="button" class="btn btn-save" onclick="saveSupervisionData()">保存</button>
-            <button class="btn btn-nav" onclick="location.href='supervision-list.html'">返回上一页</button>
+        
+        <div class="global-buttons">
+            <button type="button" class="edit" onclick="enableEdit()">修改</button>
+            <button type="button" class="save" onclick="saveSupervisionData()" style="display: none;">保存</button>
+            <button type="button" class="back" onclick="location.href='supervision-list.html'">返回上一页</button>
         </div>
-        <form id="supervisionForm">
-            <div class="section">
-                <h2>检查信息</h2>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label required">检查日期</label>
-                        <input type="date" name="inspectionDate" class="form-input" required>
-                    </div>
-                    <div class="form-field">
-                        <label class="form-label required">检查人员</label>
-                        <input type="text" name="inspector" class="form-input" required>
-                    </div>
+        
+        <form id="supervisionForm" class="section">
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">检查名称或事由</span>
+                    <input type="text" id="supervisionName" name="supervisionName" class="form-input" required>
                 </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label">检查类型</label>
-                        <select name="inspectionType" class="form-input">
-                            <option value="">请选择</option>
-                            <option value="常规检查">常规检查</option>
-                            <option value="专项检查">专项检查</option>
-                            <option value="突击检查">突击检查</option>
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label class="form-label">检查结果</label>
-                        <select name="inspectionResult" class="form-input">
-                            <option value="">请选择</option>
-                            <option value="合格">合格</option>
-                            <option value="不合格">不合格</option>
-                            <option value="需整改">需整改</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label">检查内容</label>
-                        <textarea name="inspectionContent" class="form-input" rows="4"></textarea>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label">存在问题</label>
-                        <textarea name="existingProblems" class="form-input" rows="4"></textarea>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-field">
-                        <label class="form-label">整改建议</label>
-                        <textarea name="improvementSuggestions" class="form-input" rows="4"></textarea>
-                    </div>
+                <div class="form-field">
+                    <span class="form-label required">检查日期</span>
+                    <input type="date" id="date" name="date" class="form-input" required>
                 </div>
             </div>
-            <div class="section">
-                <h2>检查图库</h2>
-                <div>
-                    <input type="file" id="imageUpload" accept="image/*" style="display: none;" multiple>
-                    <button type="button" class="btn btn-function" onclick="triggerImageUpload()">上传图片</button>
-                    <button type="button" class="btn btn-function" onclick="deleteSelectedImages()">删除选中</button>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">建设单位名称</span>
+                    <input type="text" name="constructionUnitName" class="form-input">
                 </div>
-                <div class="image-gallery">
-                    <table id="imageList">
-                        <tr>
-                            <th>选中</th>
-                            <th>文件名</th>
-                            <th>上传时间</th>
-                            <th>操作</th>
-                        </tr>
-                    </table>
+                <div class="form-field">
+                    <span class="form-label">项目所在地</span>
+                    <input type="text" name="projectLocation" class="form-input">
+                </div>
+            </div>
+            <div class="form-row three-column">
+                <div class="form-field">
+                    <span class="form-label required">监督人</span>
+                    <input type="text" id="supervisor" name="supervisor" class="form-input" required>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">检查类型</span>
+                    <select name="inspectionType" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="常规检查">常规检查</option>
+                        <option value="专项检查">专项检查</option>
+                        <option value="突击检查">突击检查</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">检查结果</span>
+                    <select name="inspectionResult" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="合格">合格</option>
+                        <option value="不合格">不合格</option>
+                        <option value="需整改">需整改</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">监督意见</span>
+                    <textarea id="comments" name="comments" class="form-input" rows="5" required></textarea>
                 </div>
             </div>
         </form>
+        
+        <p id="message"></p>
     </div>
-    <script>
-        let isNewSupervision = localStorage.getItem('isNewSupervision') === 'true';
+    
+    <script type="module">
+        import { enableEdit, disableForm, saveSupervisionData, uploadFile, downloadFile, deleteFile } from './js/supervision-form.js';
 
-        function disableForm() {
-            const form = document.getElementById('supervisionForm');
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.disabled = true;
-            });
-            document.querySelector('.btn-edit').style.display = 'inline-block';
-            document.querySelector('.btn-save').style.display = 'none';
-        }
+        window.enableEdit = enableEdit;
+        window.disableForm = disableForm;
+        window.saveSupervisionData = saveSupervisionData;
+        window.uploadFile = uploadFile;
+        window.downloadFile = downloadFile;
+        window.deleteFile = deleteFile;
 
-        function editForm() {
-            const form = document.getElementById('supervisionForm');
-            const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
-            inputs.forEach(input => {
-                input.disabled = false;
-            });
-            document.querySelector('.btn-edit').style.display = 'none';
-            document.querySelector('.btn-save').style.display = 'inline-block';
-        }
-
-        function saveSupervisionData() {
-            const formData = new FormData(document.getElementById('supervisionForm'));
-            const supervisionData = Object.fromEntries(formData.entries());
-
-            // 添加这行代码来保存 supervisionId
+        document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const supervisionId = urlParams.get('id');
-            if (supervisionId) {
-                supervisionData.supervisionId = supervisionId;
-            }
+            const isNewSupervision = !supervisionId;
 
-            // 检查必填项
-            if (!supervisionData.inspectionDate || !supervisionData.inspector) {
-                alert('检查日期和检查人员为必填项，请填写完整。');
-                return;
-            }
+            localStorage.setItem('isNewSupervision', isNewSupervision);
 
-            let supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
-
-            if (isNewSupervision) {
-                supervisionData.supervisionId = Date.now().toString();
-                supervisions.push(supervisionData);
-            } else {
-                const editIndex = supervisions.findIndex(s => s.supervisionId === supervisionData.supervisionId);
-                if (editIndex !== -1) {
-                    supervisions[editIndex] = supervisionData;
-                } else {
-                    alert('未找到要编辑的检查数据');
-                    return;
-                }
-            }
-
-            localStorage.setItem('supervisions', JSON.stringify(supervisions));
-            localStorage.removeItem('isNewSupervision');
-            disableForm();
-            alert('保存成功');
-            window.location.href = 'supervision-list.html';
-        }
-
-        function triggerImageUpload() {
-            document.getElementById('imageUpload').click();
-        }
-
-        function deleteSelectedImages() {
-            const checkboxes = document.querySelectorAll('#imageList input[type="checkbox"]:checked');
-            if (checkboxes.length === 0) {
-                alert('请选择要删除的图片');
-                return;
-            }
-            
-            checkboxes.forEach(checkbox => {
-                checkbox.closest('tr').remove();
-            });
-        }
-
-        document.getElementById('imageUpload').addEventListener('change', function(event) {
-            const files = event.target.files;
-            const imageList = document.getElementById('imageList');
-            
-            for (let file of files) {
-                // 在表头后插入新行
-                const newRow = imageList.insertRow(1);
-                const cell1 = newRow.insertCell(0);
-                const cell2 = newRow.insertCell(1);
-                const cell3 = newRow.insertCell(2);
-                const cell4 = newRow.insertCell(3);
-                
-                cell1.innerHTML = '<input type="checkbox">';
-                cell2.textContent = file.name;
-                cell3.textContent = new Date().toLocaleString();
-                cell4.innerHTML = `
-                    <button onclick="previewImage('${URL.createObjectURL(file)}', event)">预览</button>
-                    <button onclick="downloadImage('${file.name}', '${URL.createObjectURL(file)}', event)">下载</button>
-                `;
-            }
-        });
-
-        function previewImage(url, event) {
-            event.preventDefault(); // 阻止默认行为
-            const previewWindow = window.open(url, '_blank', 'width=800,height=600');
-            previewWindow.onload = function() {
-                const closeButton = previewWindow.document.createElement('button');
-                closeButton.textContent = '关闭';
-                closeButton.style.position = 'fixed';
-                closeButton.style.top = '10px';
-                closeButton.style.right = '10px';
-                closeButton.onclick = function() {
-                    previewWindow.close();
-                };
-                previewWindow.document.body.appendChild(closeButton);
-            };
-        }
-
-        function downloadImage(fileName, url, event) {
-            event.preventDefault(); // 阻止默认行为
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        window.addEventListener('load', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const supervisionId = urlParams.get('id');
-
-            if (!isNewSupervision && supervisionId) {
+            if (!isNewSupervision) {
                 loadSupervisionData(supervisionId);
                 disableForm();
             } else {
-                document.querySelector('.btn-edit').style.display = 'none';
-                document.querySelector('.btn-save').style.display = 'inline-block';
+                document.querySelector('.global-buttons .edit').style.display = 'none';
+                document.querySelector('.global-buttons .save').style.display = 'inline-block';
             }
         });
 
         function loadSupervisionData(supervisionId) {
             const supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
-            const supervision = supervisions.find(s => s.supervisionId === supervisionId);
-            
+            const supervision = supervisions.find(s => s.id === supervisionId);
             if (supervision) {
-                const form = document.getElementById('supervisionForm');
-                for (let key in supervision) {
-                    const input = form.elements[key];
+                Object.keys(supervision).forEach(key => {
+                    const input = document.querySelector(`[name="${key}"]`);
                     if (input) {
                         input.value = supervision[key];
                     }
-                }
-            } else {
-                alert('未找到检查数据');
+                });
             }
         }
     </script>

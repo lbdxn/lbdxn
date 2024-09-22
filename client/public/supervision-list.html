@@ -162,19 +162,26 @@
             tableBody.innerHTML = '';
 
             supervisions.forEach((supervision, index) => {
-                const row = tableBody.insertRow();
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${supervision.inspectionDate || ''}</td>
-                    <td>${supervision.inspector || ''}</td>
-                    <td>${supervision.inspectionType || ''}</td>
-                    <td>${supervision.inspectionResult || ''}</td>
-                    <td class="action-cell">
-                        <button class="btn btn-edit" onclick="viewSupervision('${supervision.supervisionId}')">查看</button>
-                        <button class="btn btn-delete" onclick="deleteSupervision('${supervision.supervisionId}')">删除</button>
-                    </td>
-                `;
+                if (supervision && supervision.id) {  // 确保supervision对象存在且有id
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${supervision.date || ''}</td>
+                        <td>${supervision.supervisor || ''}</td>
+                        <td>${supervision.supervisionName || ''}</td>
+                        <td>${supervision.comments || ''}</td>
+                        <td class="action-cell">
+                            <button class="btn btn-edit" onclick="viewSupervision('${supervision.id}')">查看</button>
+                            <button class="btn btn-delete" onclick="deleteSupervision('${supervision.id}')">删除</button>
+                        </td>
+                    `;
+                }
             });
+
+            if (supervisions.length === 0) {
+                const row = tableBody.insertRow();
+                row.innerHTML = '<td colspan="6">暂无监督记录</td>';
+            }
         }
 
         function createNewSupervision() {
@@ -187,12 +194,12 @@
             location.href = `supervision-form.html?id=${supervisionId}`;
         }
 
-        function deleteSupervision(supervisionId) {
-            if (confirm('确定要删除这个检查记录吗？')) {
+        function deleteSupervision(id) {
+            if (confirm('确定要删除这条监督记录吗？')) {
                 let supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
-                supervisions = supervisions.filter(supervision => supervision.supervisionId !== supervisionId);
+                supervisions = supervisions.filter(s => s.id !== id);
                 localStorage.setItem('supervisions', JSON.stringify(supervisions));
-                loadSupervisions();
+                loadSupervisions(); // 重新加载列表
             }
         }
 
