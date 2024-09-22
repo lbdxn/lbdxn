@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+.page-container {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    gap: 50px; /* 添加间距 */
+    transform: translateX(-10%); /* 整体向左平移30% */
+}
+
+.image-container {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    max-width: 40%; /* 限制图片容器的最大宽度 */
+}
+
+.login-image { 
+    max-height: 80%;
+    max-width: 80%;
+    object-fit: contain;
+    border: none; /* 删除图片边框 */
+}
+
+.login-container {
+    flex: 1;
+    max-width: 400px;
+    padding: 40px;
+    background-color: transparent;
+    border-radius: 8px;
+    box-shadow: none; /* 删除登录框阴影，effectively removing its border */
+    max-width: 27%; /* 限制登录框容器的最大宽度 */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    margin-bottom: 15px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #166fe5;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+a {
+    color: #1877f2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+#message {
+    color: red;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+#togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    padding: 5px;
+}
+
+#togglePassword:focus {
+    outline: none;
+}
+
+#togglePassword:hover {
+    color: #333;
+}

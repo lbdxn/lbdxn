@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付管理 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+    <style>
+        /* 添加与 project-form.html 一致的样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: left;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: normal;
+            color: #333;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+            background-color: transparent;
+            color: #333;
+        }
+        .nav-tab.active {
+            color: #f8fbfd;
+            font-weight: bold;
+        }
+        .nav-tab:hover {
+            color: #1e88e5;
+        }
+        .global-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            padding-right: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .global-buttons button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .global-buttons .edit {
+            background-color: #4285f4;
+            color: white;
+        }
+        .global-buttons .edit:hover {
+            background-color: #1976d2;
+        }
+        .global-buttons .save {
+            background-color: #43a047;
+            color: white;
+        }
+        .global-buttons .save:hover {
+            background-color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>委外项目管理系统</h1>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+            <button class="nav-tab" onclick="location.href='project-form.html'">基本情况</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='risk-form.html'">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-form.html'">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-form.html'">成果提交</button>
+            <button class="nav-tab active">支付管理</button>
+        </div>
+        <div class="global-buttons">
+            <button type="button" class="edit" onclick="enableEdit()">修改</button>
+            <button type="submit" class="save">保存</button>
+        </div>
+        <form id="paymentForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>支付信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">支付金额</span>
+                        <input type="number" name="paymentAmount" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label required">支付日期</span>
+                        <input type="date" name="paymentDate" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">支付类型</span>
+                        <select name="paymentType" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="预付款">预付款</option>
+                            <option value="进度款">进度款</option>
+                            <option value="尾款">尾款</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">支付状态</span>
+                        <select name="paymentStatus" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="待支付">待支付</option>
+                            <option value="已支付">已支付</option>
+                            <option value="支付失败">支付失败</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">支付说明</span>
+                        <textarea name="paymentDescription" class="form-input" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        document.getElementById('projectId').value = projectId;
+
+        function loadPaymentData() {
+            const paymentData = JSON.parse(localStorage.getItem(`payment_${projectId}`)) || {};
+            Object.keys(paymentData).forEach(key => {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = paymentData[key];
+                }
+            });
+            disableForm();
+        }
+
+        function disableForm() {
+            const inputs = document.querySelectorAll('#paymentForm input, #paymentForm select, #paymentForm textarea');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#paymentForm input, #paymentForm select, #paymentForm textarea');
+            inputs.forEach(input => input.disabled = false);
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const paymentData = Object.fromEntries(formData.entries());
+            localStorage.setItem(`payment_${projectId}`, JSON.stringify(paymentData));
+            alert('保存成功');
+            disableForm();
+        });
+
+        window.onload = loadPaymentData;
+    </script>
+</body>
+</html>

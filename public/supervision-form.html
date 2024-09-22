@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目监督 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: #1e88e5;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            display: inline-block;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+        h1 {
+            margin: 0;
+            white-space: nowrap;
+        }
+        h2 {
+            margin-bottom: 1rem;
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 15px;
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .form-row.three-column .form-field {
+            flex: 0 0 32%;
+        }
+        .form-label {
+            display: block;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 4px 4px;
+        }
+        .required::after {
+            content: "*";
+            color: #e53935;
+            margin-left: 5px;
+        }
+        button {
+            background-color: #1e88e5;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1565c0;
+        }
+        .section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .global-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            padding-right: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .global-buttons button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .global-buttons .edit {
+            background-color: #5fe8c1;
+            color: white;
+        }
+        .global-buttons .edit:hover {
+            background-color: #1976d2;
+        }
+        .global-buttons .save {
+            background-color: #43a047;
+            color: white;
+        }
+        .global-buttons .save:hover {
+            background-color: #388e3c;
+        }
+        .global-buttons .back {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .global-buttons .back:hover {
+            background-color: #e0e0e0;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            color: #1e88e5;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>行政监督检查</h1>
+        </header>
+        
+        <div class="global-buttons">
+            <button type="button" class="edit" onclick="enableEdit()">修改</button>
+            <button type="button" class="save" onclick="saveSupervisionData()" style="display: none;">保存</button>
+            <button type="button" class="back" onclick="location.href='supervision-list.html'">返回上一页</button>
+        </div>
+        
+        <form id="supervisionForm" class="section">
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">检查名称或事由</span>
+                    <input type="text" id="supervisionName" name="supervisionName" class="form-input" required>
+                </div>
+                <div class="form-field">
+                    <span class="form-label required">检查日期</span>
+                    <input type="date" id="date" name="date" class="form-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">建设单位名称</span>
+                    <input type="text" name="constructionUnitName" class="form-input">
+                </div>
+                <div class="form-field">
+                    <span class="form-label">项目所在地</span>
+                    <input type="text" name="projectLocation" class="form-input">
+                </div>
+            </div>
+            <div class="form-row three-column">
+                <div class="form-field">
+                    <span class="form-label required">监督人</span>
+                    <input type="text" id="supervisor" name="supervisor" class="form-input" required>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">检查类型</span>
+                    <select name="inspectionType" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="常规检查">常规检查</option>
+                        <option value="专项检查">专项检查</option>
+                        <option value="突击检查">突击检查</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">检查结果</span>
+                    <select name="inspectionResult" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="合格">合格</option>
+                        <option value="不合格">不合格</option>
+                        <option value="需整改">需整改</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">监督意见</span>
+                    <textarea id="comments" name="comments" class="form-input" rows="5" required></textarea>
+                </div>
+            </div>
+        </form>
+        
+        <p id="message"></p>
+    </div>
+    
+    <script type="module">
+        import { enableEdit, disableForm, saveSupervisionData, uploadFile, downloadFile, deleteFile } from './js/supervision-form.js';
+
+        window.enableEdit = enableEdit;
+        window.disableForm = disableForm;
+        window.saveSupervisionData = saveSupervisionData;
+        window.uploadFile = uploadFile;
+        window.downloadFile = downloadFile;
+        window.deleteFile = deleteFile;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const supervisionId = urlParams.get('id');
+            const isNewSupervision = !supervisionId;
+
+            localStorage.setItem('isNewSupervision', isNewSupervision);
+
+            if (!isNewSupervision) {
+                loadSupervisionData(supervisionId);
+                disableForm();
+            } else {
+                document.querySelector('.global-buttons .edit').style.display = 'none';
+                document.querySelector('.global-buttons .save').style.display = 'inline-block';
+            }
+        });
+
+        function loadSupervisionData(supervisionId) {
+            const supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
+            const supervision = supervisions.find(s => s.id === supervisionId);
+            if (supervision) {
+                Object.keys(supervision).forEach(key => {
+                    const input = document.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        input.value = supervision[key];
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

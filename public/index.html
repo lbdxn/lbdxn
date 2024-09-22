@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #1a73e8;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 28px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #5f6368;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .btn, .delete-btn, .view-btn, .new-btn {
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 2px 2px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+        .delete-btn {
+            background-color: #ea4335;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: #d93025;
+        }
+        .view-btn {
+            background-color: #34a853;
+            color: white;
+        }
+        .view-btn:hover {
+            background-color: #2e8b57;
+        }
+        .new-btn {
+            background-color: #4285f4;
+            color: white;
+        }
+        .new-btn:hover {
+            background-color: #3367d6;
+        }
+        .action-cell {
+            text-align: center;
+            white-space: nowrap;
+        }
+        .action-cell button {
+            margin: 0 2px;
+        }
+        /* 修改列宽和对齐方式 */
+        th:nth-child(1), td:nth-child(1) { width: 5%; text-align: center; } /* 序号 */
+        th:nth-child(2), td:nth-child(2) { width: 35%; text-align: center; } /* 项目名称 */
+        th:nth-child(3), td:nth-child(3) { width: 35%; text-align: center; } /* 委外单位 */
+        th:nth-child(4), td:nth-child(4) { width: 10%; text-align: center; } /* 工程状态 */
+        th:nth-child(5), td:nth-child(5) { width: 15%; text-align: center; } /* 操作 */
+
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin: 20px 0;
+        }
+
+        .header-actions button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        #logoutBtn {
+            background-color: #ea4335;
+            color: white;
+        }
+
+        #logoutBtn:hover {
+            background-color: #d93025;
+        }
+
+        .new-project-btn {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        .new-project-btn:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>项目管理系统</h1>
+        </div>
+    </header>
+    <div class="container">
+        <div class="header-actions">
+            <button class="new-project-btn" onclick="location.href='project-form.html'">新建项目</button>
+            <button id="logoutBtn" onclick="logout()">登出</button>
+        </div>
+        <table id="projectTable">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>项目名称</th>
+                    <th>履约单位</th>
+                    <th>工程状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 项目列表将在这里动态生成 -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+
+        function loadProjects() {
+            const tableBody = document.querySelector('#projectTable tbody');
+            tableBody.innerHTML = '';
+
+            projects.forEach((project, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${project.projectName || ''}</td>
+                    <td>${project.outsourcingUnitName || ''}</td>
+                    <td>${project.projectStatus || ''}</td>
+                    <td class="action-cell">
+                        <button class="view-btn" onclick="viewProject('${project.projectId}')">查看</button>
+                        <button class="delete-btn" onclick="deleteProject('${project.projectId}')">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function createNewProject() {
+            window.location.href = 'project-form.html';
+        }
+
+        function viewProject(projectId) {
+            window.open(`project-form.html?id=${projectId}&mode=view`, '_blank');
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('确定要删除这个项目吗？')) {
+                projects = projects.filter(p => p.projectId !== projectId);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                loadProjects();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        // 处理来自 project-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'saveProject') {
+                const newProject = event.data.data;
+                
+                // 检查项目名称是否已存在
+                const existingProject = projects.find(p => p.projectName === newProject.projectName && p.projectId !== newProject.projectId);
+                if (existingProject) {
+                    alert('项目名称已存在，请重新填写');
+                    // 向 project-form.html 发送消息，通知保存失败
+                    if (event.source) {
+                        event.source.postMessage({ type: 'saveFailed', reason: 'duplicateName' }, '*');
+                    }
+                    return;
+                }
+
+                // 更新或添加项目
+                const existingIndex = projects.findIndex(p => p.projectId === newProject.projectId);
+                if (existingIndex > -1) {
+                    projects[existingIndex] = newProject;
+                } else {
+                    projects.push(newProject);
+                }
+
+                localStorage.setItem('projects', JSON.stringify(projects));
+                loadProjects();
+                
+                // 向 project-form.html 发送消息，通知保存成功
+                if (event.source) {
+                    event.source.postMessage({ type: 'saveSuccess' }, '*');
+                }
+                alert('数据已保存');
+            }
+        });
+
+        // 页面加载时显示项目列表
+        window.onload = loadProjects;
+    </script>
+</body>
+</html>
