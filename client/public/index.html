@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+             color: #333;
+             background-color: #f5f5f5;
+             margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #1e88e5;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px 8px 0 0;
+        }
+        .header-content {
+             width: 60%; /* 设置宽度为 60% */
+            margin: 0 auto; /* 居中对齐 */
+        }
+        h1 {
+             margin: 0;
+             font-weight: 300;
+             font-size: 28px;
+             padding: 1rem;
+             width: 100%;
+             height: auto; /* 确保 h1 填满容器 */
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .stat {
+            background: #c3d8aa;
+            color: rgb(6, 6, 6);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .stat h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .stat p {
+            margin: 5px 0 0;
+            font-size: 18px;
+        }
+        #logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px auto;
+            cursor: pointer;
+            border-radius: 4px;
+            display: block;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: #f4f4f4;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 110%;
+        }
+        .nav-tab:hover {
+            background: #ddd;
+        }
+        .nav-tab.active {
+            background: #1e88e5;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>项目管理系统</h1>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="location.href='index.html'">主页</button>
+            <button class="nav-tab" onclick="location.href='project-list.html'">项目列表</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='risk-list.html'">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-list.html'">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-list.html'">成果提交</button>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <h2 id="projectCount">0</h2>
+                <p>项目总数</p>
+            </div>
+            <div class="stat">
+                <h2 id="dumpCount">0</h2>
+                <p>渣场总数</p>
+            </div>
+            <div class="stat">
+                <h2 id="supervisionCount">0</h2>
+                <p>检查记录总数</p>
+            </div>
+            <div class="stat">
+                <h2 id="resultCount">0</h2>
+                <p>成果报告总数</p>
+            </div>
+        </div>
+        <button id="logout-btn">登出</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const projects = JSON.parse(localStorage.getItem('projects')) || [];
+            const dumps = JSON.parse(localStorage.getItem('dumps')) || [];
+            const supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
+            const results = JSON.parse(localStorage.getItem('results')) || [];
+
+            document.getElementById('projectCount').innerText = projects.length;
+            document.getElementById('dumpCount').innerText = dumps.length;
+            document.getElementById('supervisionCount').innerText = supervisions.length;
+            document.getElementById('resultCount').innerText = results.length;
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

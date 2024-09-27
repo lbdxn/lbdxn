@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目列表 - 委外项目管理系统</title>
+    <link rel="stylesheet" href="css/styles-list.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>项目管理系统</h1>
+            </div>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+            <button class="nav-tab active">项目列表</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='risk-list.html'">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-list.html'">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-list.html'">成果提交</button>
+        </div>
+        <div class="header-actions">
+            <button onclick="window.open('project-form.html', '_blank', 'width=800,height=600')">新建项目</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>项目名称</th>
+                    <th>项目类型</th>
+                    <th>履约单位名称</th>
+                    <th>工程状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="projectTableBody">
+                <!-- 项目数据将被填充到这里 -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+
+        function loadprojects() {
+            const tableBody = document.querySelector('#projectTableBody');
+            tableBody.innerHTML = '';
+
+            // 对项目记录按日期降序排序
+            projects.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            projects.forEach((project, index) => {
+                if (project && project.projectId) {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${project.projectName || ''}</td>
+                        <td>${project.performanceBond || ''}</td>
+                        <td>${project.outsourcingUnitName || ''}</td>
+                        <td>${project.projectStatus || ''}</td>
+                        <td class="action-cell">
+                            <button class="btn btn-edit" onclick="viewproject('${project.projectId}')">查看</button>
+                            <button class="btn btn-delete" onclick="deleteproject('${project.projectId}')">删除</button>
+                        </td>
+                    `;
+                }
+            });
+
+            if (projects.length === 0) {
+                const row = tableBody.insertRow();
+                row.innerHTML = '<td colspan="6">暂无项目记录</td>';
+            }
+        }
+
+        function createNewproject() {
+            window.open('project-form.html', '_blank');
+        }
+
+        function viewproject(projectId) {
+            window.open(`project-form.html?id=${projectId}&mode=view`, '_blank');
+        }
+
+        function deleteproject(id) {
+            if (confirm('确定要删除这条项目记录吗？')) {
+                projects = projects.filter(s => s.projectId !== id);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                loadprojects();
+            }
+        }
+
+        // 处理来自 project-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'saveproject') {
+                const newproject = event.data.data;
+
+                // 更新或添加项目记录
+                const existingIndex = projects.findIndex(s => s.projectId === newproject.projectId);
+                if (existingIndex > -1) {
+                    projects[existingIndex] = newproject;
+                } else {
+                    projects.unshift(newproject); // 添加到数组开头
+                }
+
+                localStorage.setItem('projects', JSON.stringify(projects));
+                loadprojects();
+
+                alert('数据已保存');
+            }
+        });
+
+        // 处理来自 project-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'projectUpdated') {
+                projects = JSON.parse(localStorage.getItem('projects')) || [];
+                loadprojects();
+            }
+        });
+
+        // 页面加载时显示项目记录列表
+        window.onload = loadprojects;
+    </script>
+</body>
+</html>

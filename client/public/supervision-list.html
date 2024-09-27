@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监督检查列表 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/styles-list.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>项目管理系统</h1>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+            <button class="nav-tab" onclick="location.href='project-form.html'">基本情况</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='risk-list.html'">风险识别</button>
+            <button class="nav-tab active">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-list.html'">成果提交</button>
+        </div>
+        <div class="global-buttons">
+            <button class="btn btn-new" onclick="createNewSupervision()">新建检查</button>
+        </div>
+        <table id="supervisionTable">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>检查组织单位或部门</th>
+                    <th>检查事由及内容</th>
+                    <th>检查日期</th>
+                    <th>检查组负责人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 表格内容将通过 JavaScript 动态填充 -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
+
+        function loadSupervisions() {
+            const tableBody = document.querySelector('#supervisionTable tbody');
+            tableBody.innerHTML = '';
+
+            // 对监督记录按日期降序排序
+            supervisions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            supervisions.forEach((supervision, index) => {
+                if (supervision && supervision.id) {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${supervision.supervisionName || ''}</td>
+                        <td>${supervision.constructionUnitName || ''}</td>
+                        <td>${supervision.date || ''}</td>
+                        <td>${supervision.outsourcingResponsiblePerson || ''}</td>
+                        <td class="action-cell">
+                            <button class="btn btn-edit" onclick="viewSupervision('${supervision.id}')">查看</button>
+                            <button class="btn btn-delete" onclick="deleteSupervision('${supervision.id}')">删除</button>
+                        </td>
+                    `;
+                }
+            });
+
+            if (supervisions.length === 0) {
+                const row = tableBody.insertRow();
+                row.innerHTML = '<td colspan="6">暂无监督记录</td>';
+            }
+        }
+
+        function createNewSupervision() {
+            window.open('supervision-form.html', '_blank');
+        }
+
+        function viewSupervision(supervisionId) {
+            window.open(`supervision-form.html?id=${supervisionId}&mode=view`, '_blank');
+        }
+
+        function deleteSupervision(id) {
+            if (confirm('确定要删除这条监督记录吗？')) {
+                supervisions = supervisions.filter(s => s.id !== id);
+                localStorage.setItem('supervisions', JSON.stringify(supervisions));
+                loadSupervisions();
+            }
+        }
+
+        // 处理来自 supervision-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'saveSupervision') {
+                const newSupervision = event.data.data;
+                
+                // 更新或添加监督记录
+                const existingIndex = supervisions.findIndex(s => s.id === newSupervision.id);
+                if (existingIndex > -1) {
+                    supervisions[existingIndex] = newSupervision;
+                } else {
+                    supervisions.unshift(newSupervision); // 添加到数组开头
+                }
+
+                localStorage.setItem('supervisions', JSON.stringify(supervisions));
+                loadSupervisions();
+                
+                // 向 supervision-form.html 发送消息，通知保存成功
+                if (event.source) {
+                    event.source.postMessage({ type: 'saveSuccess' }, '*');
+                }
+                alert('数据已保存');
+            }
+        });
+
+        // 页面加载时显示监督记录列表
+        window.onload = loadSupervisions;
+    </script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目基本情况 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css"> <!-- 引入 CSS 文件 -->
+    <script type="module" src="./js/project-form.js"></script> <!-- 引入 JavaScript 文件 -->
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>项目管理系统</h1>
+            </div>
+        </header>
+        
+        <!-- 新增全局控制按钮 -->
+        <div class="global-buttons">
+            <button type="button" class="btn btn-edit" onclick="enableEdit()" style="display: none;">修改</button>
+            <button type="button" class="btn btn-save" onclick="saveProjectData()">保存</button>
+            <button class="btn btn-nav" onclick="location.href='project-list.html'">返回上一页</button>
+        </div>
+
+        <form id="projectForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>项目基本信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">项目名称</span>
+                        <input type="text" name="projectName" class="form-input" required>
+                    </div>    
+                    <div class="form-field">
+                        <span class="form-label">建设单位名称</span>
+                        <input type="text" name="constructionUnitName" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">项目所在地</span>
+                        <input type="text" name="Locationoftheproject" class="form-input">
+                    </div>  
+                    <div class="form-field">
+                        <span class="form-label required">项目类型</span>
+                        <select name="performanceBond" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="水保监理">水保监理</option>
+                            <option value="水保监测">水保监测</option>
+                            <option value="环保监理">环保监理</option>
+                            <option value="水保监理及监测">水保监理及监测</option>
+                            <option value="环保监理及监测">环保监理及监测</option>
+                            <option value="其他">环保监理及监测</option> 
+                        </select>
+                    </div>   
+                </div>
+
+
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">合同工期（月）</span>
+                        <input type="text" name="contractAmount" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">预计结束日期</span>
+
+
+                        <input type="date" name="estimatedEndDate" class="form-input">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">履约单位名称</span>
+                        <input type="text" name="outsourcingUnitName" class="form-input" required>
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label">工作开展形式</span>
+                        <select name="workForm" class="form-input">
+                            <option value="">请选择</option>
+                            <option value="共同履约">共同履约</option>
+                            <option value="单独履约">单独履约</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row project-overview">
+                    <span class="form-label">项目概况</span>
+                    <textarea name="projectOverview" rows="5" class="form-input"></textarea>
+                </div>
+                <div class="form-row">  
+            </div>     
+        </form>
+    </div>
+        <form id="projectForm">
+            <!-- 履约情况 -->
+        <div class="section">
+                <h2>履约情况</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label">履约开始日期</span>
+                        <input type="date" name="performanceStartDate" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <span class="form-label ">工程状态</span>
+                        <select name="projectStatus" class="form-input" >
+                            <option value="">请选择</option>
+                            <option value="未开工">未开工</option>
+                            <option value="在建">在建</option>
+                            <option value="停工">停工</option>
+                            <option value="尾工">尾工</option>
+                            <option value="已完工">已完工</option>
+                        </select>
+                    </div>  
+                </div>
+            
+                    <div class="form-row">
+                        <div class="form-field">
+                            <span class="form-label">项目部地址</span>
+                            <input type="text" name="Projectdepartmentaddress" class="form-input">
+                        </div>
+                        <div class="form-field">
+                            <span class="form-label">常驻人员人数</span>
+                            <input type="text" name="Numberofpermanentpersonnel" class="form-input">
+                        </div>  
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <span class="form-label">办公条件情况</span>
+                            <input type="text" name="Office conditions" class="form-input">
+                        </div>  
+                        <div class="form-field">
+                            <span class="form-label">住宿条件情况</span>
+                            <input type="text" name="Vehicleconfigurationsituation" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                            <div class="form-field">
+                                <span class="form-label">办公设备配置情况</span>
+                                <input type="text" name="officeEquipment" class="form-input" >
+                            </div>  
+                            <div class="form-field">
+                                <span class="form-label">车辆配置情况</span>
+                                <input type="text" name="vehicleConfiguration" class="form-input" >
+                            </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>通讯录</h2>
+                    <div class="form-row four-column">
+                        <div class="form-field">
+                            <span class="form-label">履约单位负责人</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="outsourcingResponsiblePerson" id="outsourcingResponsiblePerson" required placeholder=" ">
+                                <label for="outsourcingResponsiblePerson">姓名</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="outsourcingPosition" id="outsourcingPosition" required placeholder=" ">
+                                <label for="outsourcingPosition">职务</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="outsourcingPhone" id="outsourcingPhone" required placeholder=" ">
+                                <label for="outsourcingPhone">联系方式</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row four-column">
+                        <div class="form-field">
+                            <span class="form-label">履约单位联系人</span>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="outsourcingContact" id="outsourcingContact" required placeholder=" ">
+                                <label for="outsourcingContact">姓名</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="outsourcingContactPosition" id="outsourcingContactPosition" required placeholder=" ">
+                                <label for="outsourcingContactPosition">职务</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-wrapper">
+                                <input type="text" name="outsourcingContactPhone" id="outsourcingContactPhone" required placeholder=" ">
+                                <label for="outsourcingContactPhone">联系方式</label>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <div class="section">
+                    <h2>环保信息</h2>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <span class="form-label">环评报告书及批复</span>
+                            <div class="input-group">
+                                <input type="text" name="environmentalReport" class="form-input">
+                                <div class="file-actions">
+                                    <button type="button" onclick="uploadFile('environmentalReport')">上传</button>
+                                    <button type="button" onclick="downloadFile('environmentalReport')">下载</button>
+                                    <button type="button" onclick="deleteFile('environmentalReport')">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field combined-field">
+                            <div class="input-wrapper">
+                                <input type="text" name="environmentalReportApprovalUnit" required placeholder=" ">
+                                <label for="environmentalReportApprovalUnit">审批单位</label>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="date" name="environmentalChangeApprovalDate" class="form-input" placeholder="批复时间">
+                                <label for="environmentalChangeApprovalDate">批复时间</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <span class="form-label">环评变更及批复</span>
+                            <div class="input-group">
+                                <input type="text" name="environmentalChangeApproval" class="form-input">
+                                <div class="file-actions">
+                                    <button type="button" onclick="uploadFile('environmentalChangeApproval')">上传</button>
+                                    <button type="button" onclick="downloadFile('environmentalChangeApproval')">下载</button>
+                                    <button type="button" onclick="deleteFile('environmentalChangeApproval')">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field combined-field">
+                            <div class="input-wrapper">
+                                <input type="text" name="environmentalChangeApprovalUnit" required placeholder=" ">
+                                <label for="environmentalChangeApprovalUnit">审批单位</label>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="date" name="environmentalChangeApprovalDate" class="form-input" placeholder="批复时间">
+                                <label for="environmentalChangeApprovalDate">批复时间</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <span class="form-label">水保报告书及批复</span>
+                            <div class="input-group">
+                                <input type="text" name="waterReport" class="form-input">
+                                <div class="file-actions">
+                                    <button type="button" onclick="uploadFile('waterReport')">上传</button>
+                                    <button type="button" onclick="downloadFile('waterReport')">下载</button>
+                                    <button type="button" onclick="deleteFile('waterReport')">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field combined-field">
+                            <div class="input-wrapper">
+                                <input type="text" name="waterReportApprovalUnit" required placeholder=" ">
+                                <label for="waterReportApprovalUnit">审批单位</label>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="date" name="waterReportApprovalDate" class="form-input" placeholder="批复时间">
+                                <label for="waterReportApprovalDate">批复时间</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <span class="form-label">水保变更及批复</span>
+                            <div class="input-group">
+                                <input type="text" name="waterChangeApproval" class="form-input">
+                                <div class="file-actions">
+                                    <button type="button" onclick="uploadFile('waterChangeApproval')">上传</button>
+                                    <button type="button" onclick="downloadFile('waterChangeApproval')">下载</button>
+                                    <button type="button" onclick="deleteFile('waterChangeApproval')">删除</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-field combined-field">
+                            <div class="input-wrapper">
+                                <input type="text" name="waterChangeApprovalUnit" required placeholder=" ">
+                                <label for="waterChangeApprovalUnit">审批单位</label>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="date" name="waterChangeApprovalDate" class="form-input" placeholder="批复时间">
+                                <label for="waterChangeApprovalDate">批复时间</label>
+                            </div>
+                        </div>
+                    </div>   
+                </div>      
+        </form>
+</body>
+</html>

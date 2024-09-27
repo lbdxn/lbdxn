@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成果提交 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/project-form.css">
+    <style>
+        /* 添加与 project-form.html 一致的样式 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            transform-origin: top center;
+            width: 100%;
+            height: 125%;
+            overflow-x: hidden;
+           
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 0;
+        }
+        header {
+            background-color: #1e88e5;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px 8px 0 0;
+        }
+        h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 28px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s;
+            background-color: transparent;
+            color: #333;
+        }
+        .nav-tab.active {
+            color: #f8fbfd;
+            font-weight: bold;
+        }
+        .nav-tab:hover {
+            color: #1e88e5;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .header-actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-edit {
+            background-color: #ffa000;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+        .btn-save {
+            background-color: #4caf50;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #45a049;
+        }
+        .btn-nav {
+            background-color: #1e88e5;
+            color: white;
+        }
+        .btn-nav:hover {
+            background-color: #1565c0;
+        }
+
+        /* 添加新样式 */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 15px;
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+        .form-input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .file-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+        .file-actions button {
+            padding: 5px 10px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .file-actions button:hover {
+            background-color: #3367d6;
+        }
+        .combined-field {
+            display: flex;
+            justify-content: space-between;
+        }
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .input-wrapper label {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .input-wrapper input:focus,
+        .input-wrapper input:not(:placeholder-shown) {
+            border-color: #4285f4;
+            outline: none;
+        }
+        .input-wrapper input:focus + label,
+        .input-wrapper input:not(:placeholder-shown) + label {
+            top: -12px;
+            left: 5px;
+            font-size: 12px;
+            color: #4285f4;
+            background-color: white;
+            padding: 0 5px;
+        }
+        .required::after {
+            content: " *";
+            color: red; /* 红色星标 */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>成果提交</h1>
+        </header>
+        <div class="global-buttons">
+                <button type="button" class="btn btn-edit" onclick="enableEdit()" style="display:none;">修改</button>
+                <button type="button" class="btn btn-save" onclick="saveResultsData()">保存</button>
+                <button class="btn btn-nav" onclick="location.href='results-list.html'">返回上一页</button>
+        </div>
+        <form id="resultsForm">
+            <input type="hidden" name="projectId" id="projectId">
+            <div class="section">
+                <h2>成果信息</h2>
+                <div class="form-row">
+                    <div class="form-field">
+                        <span class="form-label required">报告名称</span>
+                        <div class="input-group">
+                            <input type="text" name="resultReport" class="form-input">
+                        </div>
+                    </div>  
+                    <div class="form-field">
+                        <span class="form-label required">填表日期</span>
+                        <input type="date" name="submissionDate" class="form-input" required>
+                    </div>  
+                </div>
+                <div class="form-row">
+                    <div class="form-field" style="flex: 1;">
+                        <span class="form-label">报告类型</span>
+                        <div class="input-group">
+                            <select name="resultType" class="form-input" id="resultType">
+                                <option value="">请选择</option>
+                                <option value="监测实施方案">监测实施方案</option>
+                                <option value="监测季报">监测季报</option>
+                                <option value="监测年报">监测年报</option>
+                                <option value="回顾性评价报告">回顾性监测评价报告</option>
+                                <option value="监测总结报告">监测总结报告</option>
+                                <option value="监理规划">监理规划</option>
+                                <option value="监理细则">监理细则</option>
+                                <option value="监理季报">监理季报</option>
+                                <option value="监理年报">监理年报</option>
+                                <option value="监理规划">监理总结报告</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-field" style="flex: 1;">
+                        <span class="form-label required">是否要求上传平台</span>
+                        <div class="radio-group">
+                            <label><input type="radio" name="occupiesWaterfront" value="是" onclick="document.getElementById('platformFields').style.display='block';"> 是</label>
+                            <label><input type="radio" name="occupiesWaterfront" value="否" onclick="document.getElementById('platformFields').style.display='none'"> 否</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row" id="platformFields" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-field" style="flex: 1;">
+                            <span class="form-label ">平台名称</span>
+                            <input type="text" name="platformName" class="form-input" required>
+                        </div> 
+                        <div class="form-field" style="flex: 1;">
+                            <span class="form-label ">上传日期</span>
+                            <input type="date" name="Uploaddate" class="form-input" required>
+                        </div>  
+                    </div>
+        
+                    <div class="form-field">
+                        <span class="form-label ">平台上传成功截图</span>
+                        <div class="file-input-wrapper">
+                            <input type="text" id="platformScreenshotFileName" readonly class="file-input" placeholder="未选择文件">
+                            <button type="button" class="btn" onclick="document.getElementById('platformScreenshotFile').click()">上传</button>
+                            <button type="button" class="btn" onclick="previewFile('platformScreenshot')">预览</button>
+                            <button type="button" class="btn" onclick="downloadFile('platformScreenshot')">下载</button>
+                            <button type="button" class="btn" onclick="deleteFile('platformScreenshot')">删除</button>
+                            <input type="file" id="platformScreenshotFile" name="platformScreenshot" style="display: none;" accept="image/*" required onchange="handleFileChange(event, 'platformScreenshotFileName')">
+                        </div>
+                    </div>  
+                </div> 
+        </form>
+    </div>
+    <script>
+        let isNewResult = true; // 标记是否为新结果
+        let currentResultId = null; // 当前结果的ID
+
+        document.addEventListener('DOMContentLoaded', function() { // 当文档加载完成后执行
+            const urlParams = new URLSearchParams(window.location.search); // 获取URL参数
+            const resultId = urlParams.get('id'); // 获取结果ID
+
+            if (resultId) { // 如果存在结果ID
+                isNewResult = false; // 设置为非新结果
+                currentResultId = resultId; // 保存当前结果ID
+                loadResultsData(resultId); // 加载结果数据
+                disableForm(); // 禁用表单
+                document.querySelector('.btn-edit').style.display = 'inline-block'; // 显示“修改”按钮
+                document.querySelector('.btn-save').style.display = 'none'; // 隐藏“保存”按钮
+            } else { // 如果不存在结果ID
+                document.querySelector('.btn-edit').style.display = 'none'; // 隐藏“修改”按钮
+                document.querySelector('.btn-save').style.display = 'inline-block'; // 显示“保存”按钮
+            }
+        });
+
+        function loadResultsData(resultId) { // 加载结果数据的函数
+            const results = JSON.parse(localStorage.getItem('results')) || []; // 从本地存储获取结果数据
+            const resultData = results.find(result => result.resultId === resultId); // 查找对应的结果数据
+
+            if (resultData) { // 如果找到结果数据
+                Object.keys(resultData).forEach(key => { // 遍历结果数据的每个键
+                    const element = document.querySelector(`[name="${key}"]`); // 获取对应的表单元素
+                    if (element) { // 如果元素存在
+                        if (element.type === 'radio') { // 如果是单选框
+                            const radio = document.querySelector(`input[name="${key}"][value="${resultData[key]}"]`); // 获取对应的单选框
+                            if (radio) { // 如果单选框存在
+                                radio.checked = true; // 选中单选框
+                                radio.dispatchEvent(new Event('change')); // 触发变化事件
+                            }
+                        } else { // 如果不是单选框
+                            element.value = resultData[key]; // 设置元素的值
+                        }
+                    }
+                });
+                // 如果选择了“是”，显示平台相关字段
+                if (resultData.occupiesWaterfront === "是") { // 检查是否需要显示平台字段
+                    document.getElementById('platformFields').style.display = 'block'; // 显示平台字段
+                }
+            } else { // 如果未找到结果数据
+                alert('未找到成果数据'); // 提示未找到数据
+            }
+        }
+
+        function saveResultsData() { // 保存结果数据的函数
+            const formData = new FormData(document.getElementById('resultsForm')); // 获取表单数据
+            const resultsData = Object.fromEntries(formData.entries()); // 将表单数据转换为对象
+
+            // 检查必填字段
+            const requiredFields = ['resultReport', 'submissionDate', 'occupiesWaterfront']; // 必填字段
+            const missingFields = requiredFields.filter(field => !resultsData[field]); // 检查缺失的必填字段
+
+            if (missingFields.length > 0) { // 如果有缺失的字段
+                alert(`请填写以下必填字段：${missingFields.join(', ')}`); // 提示用户填写必填字段
+                return; // 退出函数
+            }
+
+            const urlParams = new URLSearchParams(window.location.search); // 获取URL参数
+            const resultId = urlParams.get('id') || (isNewResult ? Date.now().toString() : null); // 获取结果ID
+            if (resultId) { // 如果存在结果ID
+                resultsData.resultId = resultId; // 设置结果ID
+            }
+
+            let results = JSON.parse(localStorage.getItem('results')) || []; // 从本地存储获取结果数据
+            if (isNewResult) { // 如果是新结果
+                results.unshift(resultsData); // 新数据添加到第一行
+            } else { // 如果不是新结果
+                const editIndex = results.findIndex(result => result.resultId === resultsData.resultId); // 查找要编辑的结果索引
+                if (editIndex !== -1) { // 如果找到索引
+                    results[editIndex] = resultsData; // 更新结果数据
+                } else { // 如果未找到索引
+                    console.error('未找到要编辑的成果数据'); // 输出错误信息
+                    return; // 退出函数
+                }
+            }
+
+            localStorage.setItem('results', JSON.stringify(results)); // 保存结果数据到本地存储
+            alert('保存成功'); // 提示保存成功
+            window.location.href = 'results-list.html'; // 跳转到列表页面
+        }
+
+        function disableForm() { // 禁用表单的函数
+            const inputs = document.querySelectorAll('#resultsForm input:not([type="hidden"]), #resultsForm select, #resultsForm textarea'); // 获取所有输入元素
+            inputs.forEach(input => input.disabled = true); // 禁用每个输入元素
+        }
+
+        function enableEdit() { // 启用编辑的函数
+            const inputs = document.querySelectorAll('#resultsForm input:not([type="hidden"]), #resultsForm select, #resultsForm textarea'); // 获取所有输入元素
+            inputs.forEach(input => input.disabled = false); // 启用每个输入元素
+            document.querySelector('.btn-edit').style.display = 'none'; // 隐藏“修改”按钮
+            document.querySelector('.btn-save').style.display = 'inline-block'; // 显示“保存”按钮
+        }
+    </script>
+</body>
+</html>

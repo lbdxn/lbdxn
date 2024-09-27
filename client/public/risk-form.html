@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险识别 - 项目管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            transform-origin: top center;
+            width: 100%;
+            height: 125%;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 0;
+        }
+        header {
+            background-color: #fcfdfe;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px 8px 0 0;
+        }
+        h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 15px;
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-save {
+            background-color: #43a047;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #388e3c;
+        }
+        .btn-edit {
+            background-color: #ffa000;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+        .btn-back {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .btn-back:hover {
+            background-color: #e0e0e0;
+        }
+        .global-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .global-buttons .btn {
+            margin-left: 10px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .required::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>风险识别清单</h1>
+        </header>
+        <div class="global-buttons">
+            <button type="button" class="btn btn-edit" onclick="enableEdit()" style="display: none;">修改</button>
+            <button type="button" class="btn btn-save" onclick="saveRiskData()">保存</button>
+            <button type="button" class="btn btn-back" onclick="location.href='risk-list.html'">返回上一页</button>
+        </div>
+        <form id="riskForm" class="section">
+            <h2>风险识别表</h2>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">填表日期</span>
+                    <input type="date" id="date" name="date" class="form-input" required>
+                </div>
+                <div class="form-field">
+                    <span class="form-label required">风险识别类型</span>
+                    <select name="inspectionType" class="form-input" required>
+                        <option value="">请选择</option>
+                        <option value="水保变更">水保变更</option>
+                    </select>
+                </div>
+            </div>
+             <h2>水保变更风险识别表</h2>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">1、工程扰动是否新涉及水土流失重点预防区或者重点治理区？
+                        </label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="question1" value="是"> 是</label>
+                            <label><input type="radio" name="question1" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="question1Note" class="form-input" rows="3" placeholder="情况说明" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">2、水土流失防治责任范围或者开挖填筑土石方总量是否增加30%以上？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="question2" value="是"> 是</label>
+                            <label><input type="radio" name="question2" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="question2Note" class="form-input" rows="3" placeholder="情况说明" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">3、线型工程山区、丘陵区部分线路横向位移超过300米的长度是否累计达到该部分线路长度30%以上？
+                        </label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="question3" value="是"> 是</label>
+                            <label><input type="radio" name="question3" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="question3Note" class="form-input" rows="3" placeholder="情况说明" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">4、表土剥离量或者植物措施总面积是否减少30%以上？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="question4" value="是"> 是</label>
+                            <label><input type="radio" name="question4" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="question4Note" class="form-input" rows="3" placeholder="情况说明" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">5、水土保持重要单位工程措施发生变化，是否可能导致水土保持功能显著降低或者丧失？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="question5" value="是"> 是</label>
+                            <label><input type="radio" name="question5" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="question5Note" class="form-input" rows="3" placeholder="情况说明" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row-special">
+                    <div class="form-field-label">
+                        <label class="form-label">6、在水土保持方案确定的弃渣场以外新设弃渣场的，或者因弃渣量增加是否导致弃渣场等级提高？</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="question6" value="是"> 是</label>
+                            <label><input type="radio" name="question6" value="否"> 否</label>
+                        </div>
+                    </div>
+                    <div class="form-field-input">
+                        <textarea name="question6Note" class="form-input" rows="3" placeholder="情况说明" rows="3"></textarea>
+                    </div>
+                </div>
+            <div class="form-row">
+                <div class="form-field" style="width: 100%;">
+                    <span class="form-label required">综合评价是否属触发重大变更</span>
+                    <textarea name="evaluation" class="form-input" rows="5" required></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let isNewRisk = true;
+        let currentRiskId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const riskId = urlParams.get('id');
+
+            if (riskId) {
+                isNewRisk = false;
+                currentRiskId = riskId;
+                loadRiskData(riskId);
+                disableForm();
+                document.querySelector('.btn-edit').style.display = 'inline-block';
+                document.querySelector('.btn-save').style.display = 'none';
+            } else {
+                document.querySelector('.btn-edit').style.display = 'none';
+                document.querySelector('.btn-save').style.display = 'inline-block';
+            }
+        });
+
+        function loadRiskData(riskId) {
+            const risks = JSON.parse(localStorage.getItem('risks')) || [];
+            const risk = risks.find(r => r.id === riskId);
+            if (risk) {
+                document.querySelectorAll('#riskForm [name]').forEach(element => {
+                    if (risk[element.name] !== undefined) {
+                        if (element.type === 'radio') {
+                            element.checked = (element.value === risk[element.name]);
+                        } else {
+                            element.value = risk[element.name];
+                        }
+                    }
+                });
+            }
+        }
+
+        function saveRiskData() {
+            const formData = new FormData(document.getElementById('riskForm'));
+            const riskData = Object.fromEntries(formData.entries());
+
+            // 检查必填字段
+            const requiredFields = ['date', 'inspectionType', 'evaluation'];
+            const missingFields = requiredFields.filter(field => !riskData[field]);
+            
+            if (missingFields.length > 0) {
+                alert(`请填写以下必填字段：${missingFields.join(', ')}`);
+                return;
+            }
+
+            if (isNewRisk) {
+                riskData.id = Date.now().toString();
+            } else {
+                riskData.id = currentRiskId;
+            }
+
+            // 保存数据到 localStorage
+            let risks = JSON.parse(localStorage.getItem('risks')) || [];
+            if (!isNewRisk) {
+                risks = risks.filter(r => r.id !== currentRiskId); // 移除旧数据
+            }
+            risks.push(riskData);
+            localStorage.setItem('risks', JSON.stringify(risks));
+
+            alert('保存成功');
+            location.href = 'risk-list.html'; // 跳转到风险列表页面
+        }
+
+        function disableForm() {
+            const inputs = document.querySelectorAll('#riskForm input, #riskForm select, #riskForm textarea');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#riskForm input, #riskForm select, #riskForm textarea');
+            inputs.forEach(input => input.disabled = false);
+            document.querySelector('.btn-edit').style.display = 'none';
+            document.querySelector('.btn-save').style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成果列表 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/styles-list.css">
+    <style>
+        h1 {
+            text-align: center; /* 使 h1 文字居中 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>项目管理系统</h1>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+            <button class="nav-tab" onclick="location.href='project-list.html'">项目列表</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab" onclick="location.href='risk-list.html'">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-list.html'">监督检查</button>
+            <button class="nav-tab active">成果提交</button>
+        </div>
+        <div class="global-buttons">
+            <button class="btn btn-new" onclick="createNewResult()">新建成果</button>
+        </div>
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>填表日期</th>
+                    <th>报告名称</th>
+                    <th>是否要求上传平台</th>
+                    <th>平台名称</th>
+                    <th>上传时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 表格内容将通过 JavaScript 动态添加 -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let results = JSON.parse(localStorage.getItem('results')) || [];
+
+        function createNewResult() {
+            window.open('results-form.html', '_blank');
+        }
+
+        function loadResults() {
+            const tableBody = document.querySelector('#resultsTable tbody');
+            tableBody.innerHTML = ''; // 清空现有表格内容
+
+            // 对成果记录按日期降序排序（假设有日期字段）
+            results.sort((a, b) => new Date(b.submissionDate) - new Date(a.submissionDate));
+
+            results.forEach((result) => {
+                if (result && result.resultId) {
+                    const row = tableBody.insertRow(0); // 新数据插入到第一行
+                    row.innerHTML = `
+                        <td>1</td> <!-- 序号始终为1，因为新数据在第一行 -->
+                        <td>${result.submissionDate || ''}</td> <!-- 填表日期 -->
+                        <td>${result.resultReport || ''}</td>
+                        <td>${result.isUploaded || ''}</td> <!-- 是否上传平台 -->
+                        <td>${result.platformName || ''}</td> <!-- 平台名称 -->
+                        <td>${result.Uploaddate || ''}</td> <!-- 上传时间 -->
+                        <td class="action-cell">
+                            <button class="btn btn-edit" onclick="viewResult('${result.resultId}')">查看</button>
+                            <button class="btn btn-delete" onclick="deleteResult('${result.resultId}')">删除</button>
+                        </td>
+                    `;
+                }
+            });
+
+            if (results.length === 0) {
+                const row = tableBody.insertRow();
+                row.innerHTML = '<td colspan="3">暂无成果记录</td>';
+            }
+        }
+
+        function viewResult(resultId) {
+            window.open(`results-form.html?id=${resultId}&mode=view`, '_blank');
+        }
+
+        function deleteResult(resultId) {
+            if (confirm('确定要删除这条成果记录吗？')) {
+                results = results.filter(r => r.resultId !== resultId);
+                localStorage.setItem('results', JSON.stringify(results));
+                loadResults();
+            }
+        }
+
+        // 处理来自 results-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'saveResult') {
+                const newResult = event.data.data;
+
+                // 更新或添加成果记录
+                const existingIndex = results.findIndex(r => r.resultId === newResult.resultId);
+                if (existingIndex > -1) {
+                    results[existingIndex] = newResult;
+                } else {
+                    results.unshift(newResult); // 添加到数组开头
+                }
+
+                localStorage.setItem('results', JSON.stringify(results));
+                loadResults();
+                
+                // 向 results-form.html 发送消息，通知保存成功
+                if (event.source) {
+                    event.source.postMessage({ type: 'saveSuccess' }, '*');
+                }
+                alert('数据已保存');
+            }
+        });
+
+        // 页面加载时显示成果记录列表
+        window.onload = loadResults;
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险清单列表 - 项目管理系统</title>
+    <link rel="stylesheet" href="css/styles-list.css">
+    <style>
+        h1 {
+            text-align: center; /* 使 h1 文字居中 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>项目管理系统</h1>
+            </div>
+        </header>
+        <div class="nav-tabs">
+            <button class="nav-tab" onclick="location.href='index.html'">返回主页</button>
+            <button class="nav-tab" onclick="location.href='project-list.html'">项目列表</button>
+            <button class="nav-tab" onclick="location.href='dump-list.html'">渣场档案</button>
+            <button class="nav-tab active">风险识别</button>
+            <button class="nav-tab" onclick="location.href='supervision-list.html'">监督检查</button>
+            <button class="nav-tab" onclick="location.href='results-list.html'">成果提交</button>
+        </div>
+        <div class="global-buttons">
+            <button class="btn btn-new" onclick="createNewRisk()">新建风险</button>
+        </div>
+        <table id="riskTable">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>填表日期</th>
+                    <th>风险识别类型</th>
+                    <th>综合评价是否属触发重大变更</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 表格内容将通过 JavaScript 动态添加 -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let risks = JSON.parse(localStorage.getItem('risks')) || [];
+
+        function createNewRisk() {
+            window.open('risk-form.html', '_blank');
+        }
+
+        function updateRiskTable() {
+            const riskTable = document.getElementById('riskTable').getElementsByTagName('tbody')[0];
+            riskTable.innerHTML = ''; // 清空现有表格内容
+
+        // 按照填表日期降序排序，确保最新的记录在最前面
+        risks.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+
+            // 遍历数据并添加到表格
+            risks.forEach((risk, index) => {
+                let row = riskTable.insertRow();
+                row.insertCell(0).innerText = index + 1; // 序号
+                row.insertCell(1).innerText = risk.date; // 填表日期
+                row.insertCell(2).innerText = risk.inspectionType; // 风险识别类型
+                row.insertCell(3).innerText = risk.evaluation; // 综合评价是否属触发重大变更
+                row.insertCell(4).innerHTML = `
+                    <button class="btn btn-edit" onclick="viewRisk('${risk.id}')">查看</button>
+                    <button class="btn btn-delete" onclick="deleteRisk(${index})">删除</button>
+                `; // 操作
+            });
+        }
+        
+
+
+        function viewRisk(riskId) {
+            window.open(`risk-form.html?id=${riskId}&mode=view`, '_blank');
+        }
+
+        function deleteRisk(index) {
+            risks.splice(index, 1); // 删除指定索引的数据
+            localStorage.setItem('risks', JSON.stringify(risks)); // 更新存储
+            updateRiskTable(); // 更新表格
+        }
+
+        // 处理来自 risk-form.html 的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'saveRisk') {
+                const newRisk = event.data.data;
+
+                // 更新或添加风险记录
+                const existingIndex = risks.findIndex(r => r.id === newRisk.id);
+                if (existingIndex > -1) {
+                    risks[existingIndex] = newRisk;
+                } else {
+                    risks.unshift(newRisk); // 添加到数组开头
+                }
+
+                localStorage.setItem('risks', JSON.stringify(risks));
+                updateRiskTable();
+                
+                // 向 risk-form.html 发送消息，通知保存成功
+                if (event.source) {
+                    event.source.postMessage({ type: 'saveSuccess' }, '*');
+                }
+                alert('数据已保存');
+            }
+        });
+
+        // 页面加载时显示风险记录列表
+        window.onload = updateRiskTable;
+    </script>
+</body>
+</html>

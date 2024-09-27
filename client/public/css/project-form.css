@@ -1,0 +1,616 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #1e88e5;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 8px 8px 0 0;
+}
+.header-content {
+    width: 70%; /* 设置宽度为 100% */
+    margin: 0 auto; /* 居中对齐 */
+}
+
+h1 {
+    margin: 0;
+    font-weight: 300;
+    font-size: 28px;
+    padding: 1rem;
+    background-color: #1e88e5; /* 确保背景颜色与 header 一致 */
+    color: white;
+    width: 100%; /* 确保 h1 填满容器 */
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px; /* 统一的行间距 */
+}
+.form-field {
+    flex: 1;
+    margin-right: 15px;
+}
+.form-field:last-child {
+    margin-right: 0;
+}
+.form-row.four-column {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.form-row.four-column .form-field {
+    flex: 0 0 25%; /* 固定第一列宽度为25% */
+    margin-right: 15px;
+    white-space: nowrap; /* 防止文字换行 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 文字溢出时显示省略号 */
+    font-size: 14px;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    font-weight: bold;
+}
+.form-row.four-column .form-group {
+    flex: 1;
+    margin-right: 10px;
+}
+.form-row.four-column .form-group:last-child {
+    margin-right: 0;
+}
+.input-wrapper {
+    width: 100%;
+}
+.form-label {
+    flex: 0 0 30%;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    font-weight: bold;
+}
+.form-input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 0 4px 4px 0;
+}
+.required::after {
+    content: "*";
+    color: #e53935;
+    margin-left: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #3498db;
+    color: #fff;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+.text-field {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    user-select: none;
+}
+.combined-field {
+    display: flex;
+    justify-content: space-between;
+}
+.input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+}
+.input-wrapper label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #999;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+.input-wrapper input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+.input-wrapper input:focus,
+.input-wrapper input:not(:placeholder-shown) {
+    border-color: #4285f4;
+    outline: none;
+}
+.input-wrapper input:focus + label,
+.input-wrapper input:not(:placeholder-shown) + label {
+    top: -12px;
+    left: 5px;
+    font-size: 12px;
+    color: #4285f4;
+    background-color: white;
+    padding: 0 5px;
+}
+
+.required::after {
+    content: "*";
+    color: #e74c3c;
+    margin-left: 3px;
+}
+
+.submit-btn {
+    background-color: #2ecc71;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #27ae60;
+}
+
+@media screen and (max-width: 768px) {
+    table, tr, td {
+        display: block;
+    }
+
+    tr {
+        margin-bottom: 10px;
+    }
+
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+    }
+
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+    }
+}
+
+.project-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto; /* 添加横向滚动 */
+}
+
+.nav-item {
+    text-decoration: none;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 3px;
+    white-space: nowrap; /* 防止文字换行 */
+}
+
+.nav-item.active {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-group label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    color: #999;
+    background-color: transparent;
+    padding: 0 5px;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 12px;
+    color: #3498db;
+    background-color: #fff;
+}
+
+button[type="submit"] {
+    background-color: #1e88e5;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+button[type="submit"]:hover {
+    background-color: #1565c0;
+}
+.section {
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+
+.button-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.edit-btn {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #2980b9;
+}
+
+.required::after {
+    content: "*";
+    color: #e74c3c;
+    margin-left: 3px;
+}
+
+/* 添加媒体查询以确保在小屏幕上的响应式布局 */
+@media screen and (max-width: 768px) {
+    .project-nav {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+    }
+    
+    .nav-item {
+        flex: 0 0 auto;
+    }
+}
+
+.nav-tabs {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f0f0f0;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.nav-tab {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-tab:hover {
+    background-color: #e0e0e0;
+}
+
+.nav-tab.active {
+    background-color: #3498db;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .nav-tabs {
+        justify-content: flex-start;
+    }
+    .nav-tab {
+        flex: 0 0 auto;
+    }
+}
+
+.form-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+td {
+    width: 25%;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+}
+
+/* 添加上传下载按钮样式 */
+.file-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.file-actions button {
+            padding: 5px 10px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+}
+
+.file-actions button:hover {
+            background-color: #3367d6;
+}
+
+.form-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+}
+
+.form-label {
+            flex: 0 0 30%;
+            margin-right: 10px;
+}
+
+.input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+}
+
+.form-input {
+            flex: 1;
+            margin-right: 10px;
+ }
+
+   /* 项目概况样式调整 */
+.project-overview {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-overview .form-label {
+    margin-bottom: 10px;
+}
+
+.project-overview textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+}
+
+.project-overview {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.project-overview .form-label {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    display: block;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.project-overview textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    border: 1px solid #ddd;
+    border-radius: 0 4px 4px 4px;
+    padding: 10px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-group label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    color: #999;
+    background-color: transparent;
+    padding: 0 5px;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 12px;
+    color: #3498db;
+    background-color: #fff;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+.section-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.section-buttons button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.section-buttons button:hover {
+    background-color: #3367d6;
+}
+
+.section-buttons button.edit {
+    background-color: #34a853;
+}
+
+.section-buttons button.edit:hover {
+    background-color: #2d8e4a;
+}
+.global-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    padding-right: 20px;
+    max-width: 1200px; /* 限制最大宽度 */
+    margin-left: auto;
+    margin-right: auto;
+}
+.global-buttons button {
+    padding: 8px 16px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: hsl(290, 72%, 76%);
+    color: #333;
+    white-space: nowrap; /* 防止按钮文字换行 */
+}
+.global-buttons button:hover {
+    background-color: #43a047;
+}
+.global-buttons .edit {
+    background-color: #5fe8c1;
+    color: white;
+}
+.global-buttons .edit:hover {
+    background-color: #1976d2;
+}
+.global-buttons .save {
+    background-color: #43a047;
+    color: white;
+}
+.global-buttons .save:hover {
+    background-color: #388e3c;
+}
+
+/* 确保容器有合适的样式 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    overflow-x: hidden; /* 防止水平滚动 */
+}
+/* 调整整体布局，使其更紧凑 */
+.section {
+    margin-bottom: 20px;
+}
+h2 {
+    margin-bottom: 15px;
+}

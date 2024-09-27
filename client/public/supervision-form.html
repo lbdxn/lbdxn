@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监督检查详情 - 项目管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            transform-origin: top center;
+            width: 100%;
+            height: 125%;
+            overflow-x: hidden;
+           
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 0;
+        }
+        header {
+            background-color: #1e88e5;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px 8px 0 0;
+        }
+        h1 {
+            margin: 0;
+            font-weight: 300;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-field {
+            flex: 1;
+            margin-right: 15px;
+        }
+        .form-field:last-child {
+            margin-right: 0;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn-save {
+            background-color: #43a047;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #388e3c;
+        }
+        .btn-edit {
+            background-color: #ffa000;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #ff8f00;
+        }
+        .btn-back {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .btn-back:hover {
+            background-color: #e0e0e0;
+        }
+        .global-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .global-buttons .btn {
+            margin-left: 10px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .required::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .input-wrapper label {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            color: #999;
+        }
+        .input-wrapper input:focus + label,
+        .input-wrapper input:not(:placeholder-shown) + label {
+            opacity: 0;
+        }
+        .file-upload-container {
+            margin-top: 10px;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .file-input {
+            flex: 1;
+            margin-right: 10px;
+            min-width: 200px;
+            height: 36px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .file-input-label {
+            display: none;
+        }
+
+        .file-input-wrapper .btn {
+            margin-right: 5px;
+            height: 36px;
+            line-height: 36px;
+            padding: 0 12px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .file-input-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-input {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .file-input-wrapper .btn {
+                margin-bottom: 5px;
+            }
+        }
+
+        .form-row-special {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-field-label {
+            flex: 0 0 auto;
+            margin-right: 15px;
+        }
+
+        .radio-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-group label {
+            margin-right: 10px;
+        }
+
+        .file-upload-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .file-input {
+            flex: 1;
+            height: 36px;
+            padding: 0 10px;
+            margin-right: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .file-input-wrapper .btn {
+            height: 36px;
+            line-height: 36px;
+            padding: 0 12px;
+            white-space: nowrap;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row-special {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-field-label {
+                margin-bottom: 10px;
+            }
+
+            .file-upload-container {
+                width: 100%;
+            }
+
+            .file-input-wrapper {
+                flex-wrap: wrap;
+            }
+
+            .file-input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .file-input-wrapper .btn {
+                margin-bottom: 5px;
+            }
+        }
+
+        .image-gallery table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .image-gallery th, .image-gallery td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .image-gallery th {
+            background-color: #f2f2f2;
+        }
+        .image-gallery th:nth-child(1), .image-gallery td:nth-child(1) { width: 10%; }
+        .image-gallery th:nth-child(2), .image-gallery td:nth-child(2) { width: 30%; }
+        .image-gallery th:nth-child(3), .image-gallery td:nth-child(3) { width: 30%; }
+        .image-gallery th:nth-child(4), .image-gallery td:nth-child(4) { width: 20%; }
+        .image-gallery th:nth-child(5), .image-gallery td:nth-child(5) { width: 10%; font-size: inherit; text-align: center; }
+        .image-gallery select {
+            font-size: inherit;
+            width: 100%;
+        }
+        .image-actions {
+            white-space: nowrap;
+        }
+        .image-actions button {
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>监督检查详情</h1>
+        </header>
+        <div class="global-buttons">
+            <button type="button" class="btn btn-edit" onclick="enableEdit()" style="display: none;">修改</button>
+            <button type="button" class="btn btn-save" onclick="saveSupervisionData()">保存</button>
+            <button type="button" class="btn btn-back" onclick="location.href='supervision-list.html'">返回上一页</button>
+        </div>
+        <form id="supervisionForm" class="section">
+            <h2>现场检查情况</h2>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">检查组织单位或部门</span>
+                    <input type="text" id="supervisionName" name="supervisionName" class="form-input" required>
+                </div>
+                <div class="form-field">
+                    <span class="form-label required">检查日期</span>
+                    <input type="date" id="date" name="date" class="form-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">检查事由及内容</span>
+                    <input type="text" id="constructionUnitName" name="constructionUnitName" class="form-input" required>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">检查方式</span>
+                    <select name="inspectionType" class="form-input">
+                        <option value="">请选择</option>
+                        <option value="现场检查">现场检查</option>
+                        <option value="资料检查">书面检查</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label required">检查组负责人</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingResponsiblePerson" id="outsourcingResponsiblePerson" required placeholder=" ">
+                        <label for="outsourcingResponsiblePerson">姓名</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">职务</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingPosition" id="outsourcingPosition" placeholder=" ">
+                        <label for="outsourcingPosition">职务</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">联系方式</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingPhone" id="outsourcingPhone" placeholder=" ">
+                        <label for="outsourcingPhone">联系方式</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">检查组成员</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingResponsiblePerson1" id="outsourcingResponsiblePerson1" placeholder=" ">
+                        <label for="outsourcingResponsiblePerson1">姓名</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">职务</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingPosition" id="outsourcingPosition" placeholder=" ">
+                        <label for="outsourcingPosition">职务</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">联系方式</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingPhone" id="outsourcingPhone" placeholder=" ">
+                        <label for="outsourcingPhone">联系方式</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">检查组成员</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingResponsiblePerson2" id="outsourcingResponsiblePerson2" placeholder=" ">
+                        <label for="outsourcingResponsiblePerson">姓名</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">职务</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingPosition" id="outsourcingPosition" placeholder=" ">
+                        <label for="outsourcingPosition">职务</label>
+                    </div>
+                </div>
+                <div class="form-field">
+                    <span class="form-label">联系方式</span>
+                    <div class="input-wrapper">
+                        <input type="text" name="outsourcingPhone" id="outsourcingPhone" placeholder=" ">
+                        <label for="outsourcingPhone">联系方式</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field" style="width: 100%;">
+                    <span class="form-label required">检查结果及整改意见</span>
+                    <textarea id="comments" name="comments" class="form-input" rows="5" required style="width: 100%;"></textarea>
+                </div>
+            </div>
+            <div class="form-row-special">
+                <div class="form-field-label">
+                    <label class="form-label">是否发检查通知</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="hasInspectionNotice" value="是" onclick="toggleFileUpload('inspectionNotice', true)"> 是</label>
+                        <label><input type="radio" name="hasInspectionNotice" value="否" onclick="toggleFileUpload('inspectionNotice', false)"> 否</label>
+                    </div>
+                </div>
+                <div class="file-upload-container" id="inspectionNoticeUpload" style="display: none;">
+                    <div class="file-input-wrapper">
+                        <input type="text" id="inspectionNoticeFileName" readonly class="file-input" placeholder="未选择文件">
+                        <button type="button" class="btn" onclick="document.getElementById('inspectionNoticeFile').click()">上传</button>
+                        <button type="button" class="btn" onclick="previewFile('inspectionNotice')">预览</button>
+                        <button type="button" class="btn" onclick="downloadFile('inspectionNotice')">下载</button>
+                        <button type="button" class="btn" onclick="deleteFile('inspectionNotice')">删除</button>
+                        <input type="file" id="inspectionNoticeFile" style="display: none;" accept=".pdf,.doc,.docx">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row-special">
+                <div class="form-field-label">
+                    <label class="form-label">是否发意见反馈通知</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="hasFeedbackNotice" value="是" onclick="toggleFileUpload('feedbackNotice', true)"> 是</label>
+                        <label><input type="radio" name="hasFeedbackNotice" value="否" onclick="toggleFileUpload('feedbackNotice', false)"> 否</label>
+                    </div>
+                </div>
+                <div class="file-upload-container" id="feedbackNoticeUpload" style="display: none;">
+                    <div class="file-input-wrapper">
+                        <input type="text" id="feedbackNoticeFileName" readonly class="file-input" placeholder="未选择文件">
+                        <button type="button" class="btn" onclick="document.getElementById('feedbackNoticeFile').click()">上传</button>
+                        <button type="button" class="btn" onclick="previewFile('feedbackNotice')">预览</button>
+                        <button type="button" class="btn" onclick="downloadFile('feedbackNotice')">下载</button>
+                        <button type="button" class="btn" onclick="deleteFile('feedbackNotice')">删除</button>
+                        <input type="file" id="feedbackNoticeFile" style="display: none;" accept=".pdf,.doc,.docx">
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <!-- 新增的整改闭合部分 -->
+        <form id="rectificationForm" class="section">
+            <h2>整改闭合</h2>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">整改情况</span>
+                    <textarea id="rectificationStatus" name="rectificationStatus" class="form-input" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">整改完成日期</span>
+                    <input type="date" id="rectificationDate" name="rectificationDate" class="form-input">
+                </div>
+                <div class="form-field">
+                    <span class="form-label">整改验收人</span>
+                    <input type="text" id="rectificationInspector" name="rectificationInspector" class="form-input">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-field">
+                    <span class="form-label">备注</span>
+                    <textarea id="rectificationRemarks" name="rectificationRemarks" class="form-input" rows="3"></textarea>
+                </div>
+            </div>
+        </form>
+
+        <div class="section">
+            <h2>检查照片</h2>
+            <div>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;" multiple>
+                <button type="button" class="btn btn-function" onclick="triggerImageUpload(event)">上传图片</button>
+                <button type="button" class="btn btn-function" onclick="deleteSelectedImages(event)">删除选中</button>
+            </div>
+            <div class="image-gallery">
+                <table id="imageList">
+                    <tr>
+                        <th>选中</th>
+                        <th>文件名</th>
+                        <th>上传时间</th>
+                        <th>操作</th>
+                        <th>图片类型</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <p id="message"></p>
+    </div>
+
+    <script>
+        let isNewSupervision = true;
+        let currentSupervisionId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const supervisionId = urlParams.get('id');
+
+            if (supervisionId) {
+                isNewSupervision = false;
+                currentSupervisionId = supervisionId;
+                loadSupervisionData(supervisionId);
+                disableForm();
+                document.querySelector('.btn-edit').style.display = 'inline-block';
+                document.querySelector('.btn-save').style.display = 'none';
+            } else {
+                document.querySelector('.btn-edit').style.display = 'none';
+                document.querySelector('.btn-save').style.display = 'inline-block';
+            }
+        });
+
+        
+
+        function loadSupervisionData(supervisionId) {
+            const supervisions = JSON.parse(localStorage.getItem('supervisions')) || [];
+            const supervision = supervisions.find(s => s.id === supervisionId);
+            if (supervision) {
+                // 遍历所有表单元素并设置其值
+                document.querySelectorAll('#supervisionForm [name], #rectificationForm [name]').forEach(element => {
+                    if (supervision[element.name] !== undefined) {
+                        if (element.type === 'radio') {
+                            element.checked = (element.value === supervision[element.name]);
+                        } else {
+                            element.value = supervision[element.name];
+                        }
+                    }
+                });
+
+                // 处理文件上传字段
+                toggleFileUpload('inspectionNotice', supervision.hasInspectionNotice === '是');
+                toggleFileUpload('feedbackNotice', supervision.hasFeedbackNotice === '是');
+                if (supervision.inspectionNoticeFileName) {
+                    document.getElementById('inspectionNoticeFileName').value = supervision.inspectionNoticeFileName;
+                }
+                if (supervision.feedbackNoticeFileName) {
+                    document.getElementById('feedbackNoticeFileName').value = supervision.feedbackNoticeFileName;
+                }
+
+                if (supervision.images && supervision.images.length > 0) {
+                    supervision.images.forEach(image => {
+                        const row = document.createElement('tr');
+                        row.setAttribute('data-url', image.dataUrl);
+                        row.innerHTML = `
+                            <td><input type="checkbox"></td>
+                            <td>${image.name}</td>
+                            <td>${image.uploadTime}</td>
+                            <td class="image-actions">
+                                <button onclick="previewImage('${image.dataUrl}', event)">预览</button>
+                                <button onclick="downloadImage('${image.name}', '${image.dataUrl}', event)">下载</button>
+                            </td>
+                            <td>
+                                <span onclick="showImageTypeSelect(this)">${image.type}</span>
+                            </td>
+                        `;
+                        document.getElementById('imageList').appendChild(row);
+                    });
+                    updateImageFiles();
+                }
+            }
+        }
+
+        function saveSupervisionData() {
+            const supervisionFormData = new FormData(document.getElementById('supervisionForm'));
+            const rectificationFormData = new FormData(document.getElementById('rectificationForm'));
+            let combinedData = Object.fromEntries(supervisionFormData.entries());
+            Object.assign(combinedData, Object.fromEntries(rectificationFormData.entries()));
+
+            // 添加文件名信息
+            combinedData.inspectionNoticeFileName = document.getElementById('inspectionNoticeFileName').value;
+            combinedData.feedbackNoticeFileName = document.getElementById('feedbackNoticeFileName').value;
+
+            // 检查必填字段
+            const requiredFields = ['date', 'supervisionName', 'constructionUnitName', 'outsourcingResponsiblePerson','comments'];
+            const missingFields = requiredFields.filter(field => !combinedData[field]);
+            
+            if (missingFields.length > 0) {
+                alert(`请填写以下必填字段：${missingFields.join(', ')}`);
+                return;
+            }
+
+            if (isNewSupervision) {
+                combinedData.id = Date.now().toString();
+            } else {
+                combinedData.id = currentSupervisionId;
+            }
+
+            // 添加图片数据
+            combinedData.images = imageFiles;
+
+            // 发送消息到父窗口
+            window.opener.postMessage({ type: 'saveSupervision', data: combinedData }, '*');
+
+            // 监听保存成功的消息
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'saveSuccess') {
+                    alert('保存成功');
+                    window.close();
+                }
+            });
+        }
+
+        // 禁用表单输入
+        function disableForm() {
+            const form = document.getElementById('supervisionForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        // 启用表单编辑
+        function enableEdit() {
+            const form = document.getElementById('supervisionForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.disabled = false;
+            });
+            document.querySelector('.btn-edit').style.display = 'none';
+            document.querySelector('.btn-save').style.display = 'inline-block';
+        }
+
+        // 切换文件上传显示
+        function toggleFileUpload(fileType, show) {
+            document.getElementById(`${fileType}Upload`).style.display = show ? 'block' : 'none';
+        }
+
+        // 预览文件
+        function previewFile(fileType) {
+            const file = document.getElementById(`${fileType}File`).files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const win = window.open();
+                    win.document.write('<iframe width="100%" height="100%" src="' + content + '"></iframe>');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('请先上传文件');
+            }
+        }
+
+        // 下载文件
+        function downloadFile(fileType) {
+            const file = document.getElementById(`${fileType}File`).files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } else {
+                alert('请先上传文件');
+            }
+        }
+
+        // 删除文件
+        function deleteFile(fileType) {
+            document.getElementById(`${fileType}File`).value = '';
+            document.getElementById(`${fileType}FileName`).value = '';
+            alert('文件已删除');
+        }
+
+        // 为文件输入添加事件监听器
+        document.getElementById('inspectionNoticeFile').addEventListener('change', function(event) {
+            updateFileName('inspectionNotice', event);
+        });
+
+        document.getElementById('feedbackNoticeFile').addEventListener('change', function(event) {
+            updateFileName('feedbackNotice', event);
+        });
+
+        // 更新文件名
+        function updateFileName(fileType, event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById(`${fileType}FileName`).value = file.name;
+            }
+        }
+
+        // 全局错误处理器
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('Uncaught error:', error);
+        };
+
+        let imageFiles = [];
+
+        // 触发图片上传
+        function triggerImageUpload(event) {
+            event.preventDefault();
+            document.getElementById('imageUpload').click();
+        }
+
+        // 删除选中的图片
+        function deleteSelectedImages(event) {
+            event.preventDefault();
+            const checkboxes = document.querySelectorAll('#imageList input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== 'selectAll') {
+                    const row = checkbox.closest('tr');
+                    row.remove();
+                }
+            });
+            updateImageFiles();
+        }
+
+        // 更新图片文件列表
+        function updateImageFiles() {
+            imageFiles = Array.from(document.querySelectorAll('#imageList tr')).slice(1).map(row => {
+                return {
+                    name: row.cells[1].textContent,
+                    uploadTime: row.cells[2].textContent,
+                    dataUrl: row.getAttribute('data-url'),
+                    type: row.cells[4].querySelector('span')?.textContent || row.cells[4].querySelector('select')?.value
+                };
+            });
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const files = event.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const row = document.createElement('tr');
+                    row.setAttribute('data-url', e.target.result);
+                    row.innerHTML = `
+                        <td><input type="checkbox"></td>
+                        <td>${file.name}</td>
+                        <td>${new Date().toLocaleString()}</td>
+                        <td class="image-actions">
+                            <button onclick="previewImage('${e.target.result}', event)">预览</button>
+                            <button onclick="downloadImage('${file.name}', '${e.target.result}', event)">下载</button>
+                        </td>
+                        <td>
+                            <select onchange="updateImageType(this)">
+                                <option value="">请选择</option>
+                                <option value="检查照片">检查现场</option>
+                                <option value="整改照片">问题记录</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </td>
+                    `;
+                    const table = document.getElementById('imageList');
+                    const firstDataRow = table.rows[1];
+                    if (firstDataRow) {
+                        table.insertBefore(row, firstDataRow);
+                    } else {
+                        table.appendChild(row);
+                    }
+                    updateImageFiles();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 更新图片类型
+        function updateImageType(select) {
+            const row = select.closest('tr');
+            const imageFile = imageFiles.find(file => file.name === row.cells[1].textContent);
+            if (imageFile) {
+                imageFile.type = select.value;
+                const selectedText = select.options[select.selectedIndex].text;
+                select.style.display = 'none';
+                const textSpan = document.createElement('span');
+                textSpan.textContent = selectedText;
+                textSpan.style.cursor = 'pointer';
+                textSpan.onclick = function() {
+                    textSpan.style.display = 'none';
+                    select.style.display = '';
+                };
+                select.parentNode.insertBefore(textSpan, select);
+            }
+        }
+
+        // 预览图片
+        function previewImage(src, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+
+            const imgContainer = document.createElement('div');
+            imgContainer.style.position = 'relative';
+            imgContainer.style.maxWidth = '80%';
+            imgContainer.style.maxHeight = '80%';
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.maxWidth = '80%';
+            img.style.display = 'block';
+            img.style.borderRadius = '5px';
+
+            const closeButton = document.createElement('button');
+            closeButton.textContent = '关闭';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '10px';
+            closeButton.style.right = '10px';
+            closeButton.style.padding = '5px 10px';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+            closeButton.style.border = 'none';
+            closeButton.style.borderRadius = '5px';
+            closeButton.style.cursor = 'pointer';
+
+            closeButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.body.removeChild(modal);
+            });
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(closeButton);
+            modal.appendChild(imgContainer);
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+
+            imgContainer.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        // 下载图片
+        function downloadImage(fileName, dataUrl, event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 显示图片类型选择
+        function showImageTypeSelect(span) {
+            span.style.display = 'none';
+            const td = span.closest('td');
+            const select = td.querySelector('select');
+            if (select) {
+                select.style.display = '';
+            } else {
+                const newSelect = document.createElement('select');
+                newSelect.innerHTML = `
+                    <option value="">请选择</option>
+                    <option value="检查现场">检查现场</option>
+                    <option value="问题记录">问题记录</option>
+                    <option value="其他">其他</option>
+                `;
+                newSelect.value = span.textContent;
+                newSelect.onchange = function() {
+                    updateImageType(this);
+                };
+                td.appendChild(newSelect);
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
